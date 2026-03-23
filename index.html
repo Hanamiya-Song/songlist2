@@ -120,25 +120,46 @@
     #floatingMsgBtn:active { transform: scale(0.9); }
 
     /* ヘッダーに置くトグルのスタイル */
+    /* ヘッダーに置くトグルのスタイル */
     .header-toggle {
       display: flex;
       background: #252525;
       border-radius: 20px;
       padding: 2px;
       border: 1px solid var(--border);
+      align-items: center; /* 縦方向の中央揃え */
     }
     .header-toggle-btn {
-      padding: 6px 12px;
+      padding: 6px 14px;
       font-size: 11px;
       font-weight: bold;
       border-radius: 18px;
       color: #888;
       cursor: pointer;
       transition: all 0.2s;
+      position: relative; /* 仕切り線の基準にするために追加 */
     }
     .header-toggle-btn.active {
       background: var(--card);
       color: var(--primary);
+    }
+
+    /* ★追加：ボタンの間の仕切り線 */
+    .header-toggle-btn:not(:last-child)::after {
+      content: "";
+      position: absolute;
+      right: 0;
+      top: 25%;    /* 上から25%の位置から */
+      height: 50%; /* 半分の長さの線を引く */
+      width: 1px;
+      background-color: #444; /* 仕切り線の色（目立ちすぎないグレー） */
+      transition: opacity 0.2s;
+    }
+
+    /* ボタンがアクティブな時や、その隣のボタンがアクティブな時は線を隠す */
+    .header-toggle-btn.active::after,
+    .header-toggle-btn:has(+ .header-toggle-btn.active)::after {
+      opacity: 0;
     }
     
     #msgModal textarea { width: 100%; height: 150px; padding: 15px; font-size: 16px; outline: none; box-sizing: border-box; resize: none; border-radius: 10px;}
