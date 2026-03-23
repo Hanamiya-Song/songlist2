@@ -434,21 +434,26 @@ function filterSongs() {
   const sortType = document.getElementById('sortSelect')?.value || "artist";
   const container = document.getElementById('songList');
   container.innerHTML = '';
-  let f = [...allSongs];
   
-  // タブによる絞り込みロジックを修正
-  if (currentTab === "大森元貴曲") {
+  let f = [...allSongs];
+
+  // --- 1. タブによる絞り込み (厳密な判定) ---
+  if (currentTab === "すべて") {
+    // 絞り込みなし
+  } else if (currentTab === "大森元貴曲") {
     f = f.filter(s => OHMORI_GROUP.includes(s.artist || ""));
   } else if (currentTab === "弾き語り") {
-    f = f.filter(s => (s.type || "").includes("弾き語り"));
+    // 「タイプ」に「弾き語り」という文字が含まれているものだけ
+    f = f.filter(s => (s.type || "").split(',').includes("弾き語り"));
   } else if (currentTab === "カラオケ") {
-    f = f.filter(s => (s.type || "").includes("カラオケ"));
-  } else if (currentTab !== "すべて") {
-    // アーティストタブの場合
+    // 「タイプ」に「カラオケ」という文字が含まれているものだけ
+    f = f.filter(s => (s.type || "").split(',').includes("カラオケ"));
+  } else {
+    // それ以外のタブ（アーティスト名タブなど）
     f = f.filter(s => (s.artist || "") === currentTab);
   }
-  
-  // 検索クエリでの絞り込み
+
+  // --- 2. 検索キーワードによる絞り込み ---
   if (query) {
     f = f.filter(s => 
       (s.name || "").toLowerCase().includes(query) || 
@@ -456,7 +461,7 @@ function filterSongs() {
     );
   }
 
-  // ソート処理（既存のまま）
+  // --- 3. ソート処理 ---
   f.sort((a, b) => {
     if (sortType === "name") return (a.name || "").localeCompare((b.name || ""), 'ja');
     if (sortType === "date") {
@@ -466,8 +471,8 @@ function filterSongs() {
     }
     return (a.artist || "").localeCompare((b.artist || ""), 'ja');
   });
-  
-  // 表示（既存のまま）
+
+  // --- 4. 描画処理 ---
   if (f.length === 0) {
     container.innerHTML = `<div class="empty-state"><div class="empty-icon">😢</div><div>見つかりませんでした</div></div>`;
     return;
