@@ -15,10 +15,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
   <title>HanamiYa</title>
   <style>
-    /* CSSは元のまま変更なし */
     :root { --bg: #121212; --card: #1e1e1e; --text: #e0e0e0; --accent: #bb86fc; --primary: #03dac6; --error: #cf6679; --success: #28a745; --border: #333; }
     
-    html { background-color: #121212; height: 100%; }
+    html { background-color: var(--bg); height: 100%; }
 
     body {
       font-family: 'Segoe UI', 'Noto Sans JP', sans-serif;
@@ -41,11 +40,19 @@
     .view-selector { display: none; background: #252525; border-radius: 10px; padding: 3px; margin-top: 10px; gap: 4px; }
     .view-tab { flex: 1; display: flex; align-items: center; justify-content: center; padding: 8px; font-size: 13px; font-weight: bold; border-radius: 8px; cursor: pointer; color: #888; }
     .view-tab.active { background: var(--card); color: var(--accent); }
+    
     .content-area { flex-grow: 1; position: relative; overflow: hidden; display: flex; flex-direction: column; max-width: 800px; margin: 0 auto; width: 100%; }
-    .page { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; flex-direction: column; padding: 0 10px; box-sizing: border-box; overflow: hidden; }
+    
+    /* 修正ポイント1: 親の余白を完全になくし、画面いっぱいまで使えるようにする */
+    .page { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; flex-direction: column; padding: 0; box-sizing: border-box; overflow: hidden; }
     .page.active { display: flex; }
-    .sticky-controls { position: sticky; top: 0; z-index: 50; background: rgba(18, 18, 18, 0.95); backdrop-filter: blur(8px); margin: 0 -10px; width: calc(100% + 20px); padding: 0 10px 10px 10px; border-bottom: 1px solid var(--border); box-sizing: border-box; }
-    #tabContainer { display: flex; overflow-x: auto; gap: 8px; margin: 0 -10px; width: calc(100% + 20px); padding: 12px 10px; flex-shrink: 0; -webkit-overflow-scrolling: touch; scrollbar-width: none; box-sizing: border-box; }
+
+    /* 修正ポイント2: ログページだけは個別に余白を設定 */
+    #page-log { padding: 15px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+
+    /* 修正ポイント3: 検索エリアのマイナスマージンなどをやめ、素直に左右15pxの余白を作る */
+    .sticky-controls { position: sticky; top: 0; z-index: 50; background: rgba(18, 18, 18, 0.95); backdrop-filter: blur(8px); margin: 0; width: 100%; padding: 0 15px 10px 15px; border-bottom: 1px solid var(--border); box-sizing: border-box; }
+    #tabContainer { display: flex; overflow-x: auto; gap: 8px; margin: 0; width: 100%; padding: 12px 0; flex-shrink: 0; -webkit-overflow-scrolling: touch; scrollbar-width: none; box-sizing: border-box; }
     #tabContainer::-webkit-scrollbar { display: none; }
     .artist-tab { padding: 8px 12px; background: var(--card); border: 1px solid var(--border); border-radius: 20px; font-size: 12px; white-space: nowrap; cursor: pointer; color: #888; flex-shrink: 0; }
     .artist-tab.active { background: var(--accent); color: #000; font-weight: bold; border-color: var(--accent); }
@@ -53,49 +60,37 @@
     .search-row { display: flex; gap: 8px; height: 46px; }
     #searchBox { flex: 1; height: 100%; padding: 0 12px; border-radius: 10px; font-size: 16px; outline: none; box-sizing: border-box; margin: 0; }
     #sortSelect { width: 105px; height: 100%; border-radius: 10px; font-size: 11px; outline: none; cursor: pointer; padding: 0 5px; box-sizing: border-box; text-align: center; }
+    
+    /* 修正ポイント4: 曲リスト自体は画面幅100%にして、スクロールバーを右端に張り付ける */
     #songList {
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding-top: 10px;
-  padding-bottom: 20px;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 10px 0 20px 0; /* 上下の余白のみ */
+      margin: 0; /* 左右の余白はゼロ */
+      width: 100%;
+      overflow-y: auto;
+      overflow-x: hidden; 
+      -webkit-overflow-scrolling: touch;
+    }
+    #songList::-webkit-scrollbar { width: 4px; }
+    #songList::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
+    
+    /* 修正ポイント5: ボタンの幅を「画面幅から30px引いたサイズ」にし、中央寄せ（margin: 0 auto）にする */
+    .songBtn { 
+      width: calc(100% - 30px); 
+      margin: 0 auto; 
+      background: rgba(30, 30, 30, 0.7); color: var(--text); border: 1px solid var(--border); padding: 15px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; backdrop-filter: blur(5px); box-sizing: border-box; 
+    }
 
-  /* --- 左右対称にしてセンターに固定する設定 --- */
-  
-  /* 1. 右側を15pxはみ出させて、スクロールバーを右端へ飛ばす */
-  margin-right: -15px; 
-  padding-right: 15px; 
-
-  /* 2. 左側も同じ「15px」に合わせることで、ボタンを中央に寄せる */
-  /* もしボタンをもっと横に広げたければ、ここを 10px とかに小さくします */
-  padding-left: 15px; 
-
-  /* 3. 左側のマージンは0（右側のはみ出しと相殺させないため） */
-  margin-left: 0;
-  
-  /* ------------------------------------------ */
-
-  overflow-y: auto;
-  overflow-x: hidden; /* 横揺れを完全にシャットアウト */
-  -webkit-overflow-scrolling: touch;
-}
-    #songList::-webkit-scrollbar {
-  width: 4px;
-}
-
-#songList::-webkit-scrollbar-thumb {
-  background: #333;
-  border-radius: 10px;
-}
-    .songBtn { background: rgba(30, 30, 30, 0.7); color: var(--text); border: 1px solid var(--border); padding: 15px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; width: 100%; cursor: pointer; backdrop-filter: blur(5px); }
     .btn-main { display: flex; flex-direction: column; flex: 1; text-align: left; overflow: hidden; }
     .btn-title { font-size: 15px; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .btn-artist { font-size: 11px; color: #888; }
     .btn-date { font-size: 12px; color: var(--accent); font-family: monospace; margin-left: 10px; white-space: nowrap; }
     .msg-btn { background: transparent; color: var(--accent); border: 1px solid var(--accent); padding: 8px 10px; border-radius: 8px; font-size: 11px; font-weight: bold; cursor: pointer; white-space: nowrap; }
     #msgModal textarea { width: 100%; height: 150px; padding: 15px; font-size: 16px; outline: none; box-sizing: border-box; resize: none; }
-    .add-section { background: #252525; padding: 15px; border-radius: 10px; margin-bottom: 10px; border: 1px solid #444; flex-shrink: 0; margin-top: 10px; }
+    .add-section { background: #252525; padding: 15px; border-radius: 10px; margin-bottom: 10px; border: 1px solid #444; flex-shrink: 0; }
     .add-row { display: flex; gap: 8px; margin-bottom: 8px; width: 100%; box-sizing: border-box; }
     .add-row input { flex: 1; min-width: 0; padding: 10px; border-radius: 5px; font-size: 13px; box-sizing: border-box; }
     .add-row select { padding: 10px; border-radius: 5px; font-size: 13px; width: 100px; box-sizing: border-box; }
@@ -109,10 +104,12 @@
     .confirm-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; justify-content: center; align-items: center; z-index: 4000; }
     .confirm-card { background: var(--card); padding: 25px; border-radius: 20px; width: 85%; text-align: center; border: 1px solid var(--accent); max-width: 400px; }
     #loadingOverlay { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); display:none; justify-content:center; align-items:center; z-index:9999; color:white; font-weight:bold; }
+    
     #modalSongList, #messageList { max-height: 200px; overflow-y: auto; padding-right: 5px; }
     #modalSongList::-webkit-scrollbar, #messageList::-webkit-scrollbar, .page::-webkit-scrollbar { width: 4px; }
     #modalSongList::-webkit-scrollbar-thumb, #messageList::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 10px; }
     .page::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
+    
     #pageTopBtn { position: fixed; bottom: 20px; right: 20px; width: 45px; height: 45px; background: var(--accent); color: #000; border: none; border-radius: 50%; font-size: 20px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 2000; box-shadow: 0 4px 10px rgba(0,0,0,0.5); opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
     #pageTopBtn.show { opacity: 1; pointer-events: auto; }
   </style>
@@ -246,24 +243,19 @@
     let startTime = null, isRunning = false, allSongs = [], currentRequests = [], currentTab = "すべて";
     const OHMORI_GROUP = ["Mrs. GREEN APPLE", "Siip", "大森元貴"];
 
-    // ★ セキュリティ対応：管理者操作の場合はSessionStorageからパスワードを付与して通信
+    function sanitize(str) {
+      if (typeof str !== 'string') return str;
+      return str.replace(/[&<>"']/g, function(m) {
+        return {
+          '&': '&amp;',
+          '<': '&lt;',
+          '>': '&gt;',
+          '"': '&quot;',
+          "'": '&#39;'
+        }[m];
+      });
+    }
 
-    // 文字列を安全なものに変換する関数
-function sanitize(str) {
-  if (typeof str !== 'string') return str;
-  return str.replace(/[&<>"']/g, function(m) {
-    return {
-      '&': '&amp;',
-      '<': '&lt;',
-      '>': '&gt;',
-      '"': '&quot;',
-      "'": '&#39;'
-    }[m];
-  });
-}
-
-// リクエスト送信部分でこれを使う！
-const safeName = sanitize(document.getElementById('chatInput').value);
     async function callGAS(params, showLoading = false) {
       if (showLoading) document.getElementById('loadingOverlay').style.display = 'flex';
       
@@ -280,7 +272,6 @@ const safeName = sanitize(document.getElementById('chatInput').value);
       finally { if (showLoading) document.getElementById('loadingOverlay').style.display = 'none'; }
     }
 
-    // ★ セキュリティ対応：ログイン時はGASに問い合わせて正誤判定
     async function tryLogin() { 
       const inputPass = prompt("パスワードを入力してください"); 
       if (!inputPass) return;
@@ -303,14 +294,12 @@ const safeName = sanitize(document.getElementById('chatInput').value);
     }
 
     window.onload = async () => {
-      // ログイン状態はSessionStorageの有無で判断するよう強化
       const loggedIn = localStorage.getItem('isAdminLoggedIn') === 'true' && sessionStorage.getItem('adminPass');
       applyAdminMode(!!loggedIn);
       if (loggedIn) syncWithServer();
       fetchData(true);
     };
 
-    // ★ セキュリティ対応：DOM生成を安全なtextContentへ変更
     function generateRandom20() {
       if (allSongs.length === 0) return alert("曲リストが空です。同期してください。");
       let shuffled = [...allSongs].sort(() => 0.5 - Math.random());
@@ -397,7 +386,6 @@ const safeName = sanitize(document.getElementById('chatInput').value);
       filterSongs();
     }
 
-    // ★ セキュリティ対応：DOM生成を安全なtextContentへ変更
     function filterSongs() {
       const query = document.getElementById('searchBox')?.value.toLowerCase() || "";
       const sortType = document.getElementById('sortSelect')?.value || "artist";
@@ -549,24 +537,22 @@ const safeName = sanitize(document.getElementById('chatInput').value);
     }
 
     async function sendChatMessage() {
-  const inputEl = document.getElementById('chatInput');
-  const rawMsg = inputEl.value;
-  if (!rawMsg.trim()) return;
+      const inputEl = document.getElementById('chatInput');
+      const rawMsg = inputEl.value;
+      if (!rawMsg.trim()) return;
 
-  // ここでサニタイズを実行！
-  const safeMsg = sanitize(rawMsg);
+      const safeMsg = sanitize(rawMsg);
 
-  // 送信するのは「safeMsg」の方
-  await callGAS({ 
-    action: "sendRequest", 
-    name: safeMsg, // 安全な名前
-    artist: "💬 MESSAGE" 
-  }, true);
+      await callGAS({ 
+        action: "sendRequest", 
+        name: safeMsg,
+        artist: "💬 MESSAGE" 
+      }, true);
 
-  inputEl.value = "";
-  closeMsgModal();
-  alert("メッセージを送信しました！");
-}
+      inputEl.value = "";
+      closeMsgModal();
+      alert("メッセージを送信しました！");
+    }
 
     function openMsgModal() { document.getElementById('msgModal').style.display = 'flex'; }
     function closeMsgModal() { document.getElementById('msgModal').style.display = 'none'; }
@@ -574,7 +560,7 @@ const safeName = sanitize(document.getElementById('chatInput').value);
     async function checkRequests() {
       if (!IS_ADMIN) return;
       const reqs = await callGAS({ action: "getRequests" });
-      if (reqs && !reqs.error) { // 認証エラー等でない場合のみ更新
+      if (reqs && !reqs.error) { 
         currentRequests = reqs;
         const badge = document.getElementById('requestBadge');
         if (badge) {
@@ -584,7 +570,6 @@ const safeName = sanitize(document.getElementById('chatInput').value);
       }
     }
 
-    // ★ セキュリティ対応：DOM生成を安全なtextContentへ変更
     function openRequestModal() {
       const modal = document.getElementById('requestModal');
       const songList = document.getElementById('modalSongList'); 
@@ -692,33 +677,30 @@ const safeName = sanitize(document.getElementById('chatInput').value);
     function closeRequestModal() { document.getElementById('requestModal').style.display = 'none'; }
     function copyLog() { navigator.clipboard.writeText(document.getElementById('resultArea').value); alert("コピーしました"); }
 
-    // --- トップに戻るボタンの処理（修正版） ---
-window.addEventListener('DOMContentLoaded', () => {
-  const songList = document.getElementById('songList'); // 対象をsongListに変更
-  const topBtn = document.getElementById('pageTopBtn');
+    window.addEventListener('DOMContentLoaded', () => {
+      const songList = document.getElementById('songList');
+      const topBtn = document.getElementById('pageTopBtn');
 
-  if (songList) {
-    songList.addEventListener('scroll', () => {
-      // 50px以上スクロールしたら表示
-      if (songList.scrollTop > 50) {
-        topBtn.classList.add('show');
-      } else {
-        topBtn.classList.remove('show');
+      if (songList) {
+        songList.addEventListener('scroll', () => {
+          if (songList.scrollTop > 50) {
+            topBtn.classList.add('show');
+          } else {
+            topBtn.classList.remove('show');
+          }
+        });
       }
     });
-  }
-});
 
-// トップへ戻る関数も修正
-function scrollToTop() {
-  const songList = document.getElementById('songList');
-  if (songList) {
-    songList.scrollTo({
-      top: 0,
-      behavior: 'smooth'
-    });
-  }
-}
+    function scrollToTop() {
+      const songList = document.getElementById('songList');
+      if (songList) {
+        songList.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        });
+      }
+    }
   </script>
 </body>
 </html>
