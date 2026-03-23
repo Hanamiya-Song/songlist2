@@ -736,13 +736,17 @@
       IS_ADMIN = isAdmin;
       localStorage.setItem('isAdminLoggedIn', isAdmin);
 
+      // 管理者専用要素（admin-only）の表示切り替え
       document.querySelectorAll('.admin-only').forEach(el => {
         el.style.display = isAdmin ? 'flex' : 'none';
       });
 
-      document.getElementById('loginBtn').style.display = isAdmin ? 'none' : 'block';
-      document.getElementById('titleContainer').style.display = isAdmin ? 'none' : 'flex';
-      document.getElementById('timerDisplay').style.display = isAdmin ? 'block' : 'none';
+      // タイトルとタイマーの切り替え
+      const titleContainer = document.getElementById('titleContainer');
+      if (titleContainer) titleContainer.style.display = isAdmin ? 'none' : 'flex';
+      
+      const timerDisplay = document.getElementById('timerDisplay');
+      if (timerDisplay) timerDisplay.style.display = isAdmin ? 'block' : 'none';
 
       // ゲスト用トグルとメッセージボタンを管理者の時は隠す
       const toggleArea = document.getElementById('guestToggleArea');
@@ -751,10 +755,15 @@
       const floatBtn = document.getElementById('floatingMsgBtn');
       if (floatBtn) floatBtn.style.display = isAdmin ? 'none' : 'flex';
 
+      // ★追加：メニューの中身を管理者/ゲスト用に書き換える
+      if (typeof updateMenuContent === 'function') {
+        updateMenuContent(isAdmin);
+      }
+
       if (isAdmin) {
+        // リクエストの自動チェック開始（必要に応じて）
         setInterval(checkRequests, 3000);
       }
-      updateMenuContent(isAdmin);
     }
 
     function logout() {
