@@ -22,8 +22,7 @@
     body {
       font-family: 'Segoe UI', 'Noto Sans JP', sans-serif;
       margin: 0; padding: 0;
-      color: var(--text); /* 全体の基本文字色を白系に固定 */
-      background: linear-gradient(rgba(18, 18, 18, 0.85), rgba(18, 18, 18, 0.85)), url("https://github.com/iceplagaming-cmyk/songlist/blob/main/7808d4bc-bbc7-446e-85a7-ea2b581164bb.jpg?raw=true");
+      background: linear-gradient(rgba(18, 18, 18, 0.85), rgba(18, 18, 18, 0.85)), url("https://github.com/Hanamiya-Song/songlist/blob/main/7808d4bc-bbc7-446e-85a7-ea2b581164bb.jpg?raw=true");
       background-repeat: no-repeat; background-position: center; background-size: cover; background-attachment: fixed;
       min-height: 100vh; min-height: 100dvh; display: flex; flex-direction: column;
     }
@@ -52,29 +51,29 @@
     .sticky-controls { position: sticky; top: 0; z-index: 50; background: rgba(18, 18, 18, 0.95); backdrop-filter: blur(8px); margin: 0; width: 100%; padding: 0 15px 10px 15px; border-bottom: 1px solid var(--border); box-sizing: border-box; }
     #tabContainer { display: flex; overflow-x: auto; gap: 8px; margin: 0; width: 100%; padding: 12px 0; flex-shrink: 0; -webkit-overflow-scrolling: touch; scrollbar-width: none; box-sizing: border-box; }
     #tabContainer::-webkit-scrollbar { display: none; }
-    .artist-tab { padding: 8px 12px; background: var(--card); border: 1px solid var(--border); border-radius: 20px; font-size: 12px; white-space: nowrap; cursor: pointer; color: #888; flex-shrink: 0; transition: all 0.2s;}
+    .artist-tab { padding: 12px 16px; background: var(--card); border: 1px solid var(--border); border-radius: 20px; font-size: 12px; white-space: nowrap; cursor: pointer; color: #888; flex-shrink: 0; transition: all 0.2s;}
     .artist-tab.active { background: var(--accent); color: #000; font-weight: bold; border-color: var(--accent); }
+    
     input, select, textarea { background: var(--card) !important; color: white !important; border: 1px solid var(--border) !important; transition: border-color 0.2s; }
     input:focus, textarea:focus { border-color: var(--accent) !important; outline: none; }
     
-    .search-row { display: flex; gap: 8px; height: 46px; }
+    .search-row { display: flex; gap: 8px; height: 46px; margin-bottom: 8px; }
     #searchBox { flex: 1; height: 100%; padding: 0 12px; border-radius: 10px; font-size: 16px; box-sizing: border-box; margin: 0; }
     #sortSelect { width: 105px; height: 100%; border-radius: 10px; font-size: 11px; cursor: pointer; padding: 0 5px; box-sizing: border-box; text-align: center; }
+
+    /* --- スタイル切り替え（弾き語り/カラオケ）トグル --- */
+    .style-toggle { display: flex; background: var(--card); border-radius: 10px; overflow: hidden; border: 1px solid var(--border); height: 40px;}
+    .style-toggle label { flex: 1; text-align: center; color: #888; font-size: 13px; font-weight: bold; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center;}
+    .style-toggle input[type="radio"] { display: none; }
+    .style-toggle input[type="radio"]:checked + span { color: var(--accent); background: rgba(187, 134, 252, 0.15); }
+    .style-toggle span { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; }
     
-    /* 修正1: リストの余白を最適化し、ボタンが細くならないようにする */
-    #songList { 
-      flex-grow: 1; display: flex; flex-direction: column; gap: 8px; 
-      padding: 10px 15px 20px 15px; /* 左右に15pxの余白を持たせる */
-      margin: 0; width: 100%; box-sizing: border-box; 
-      overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; 
-    }
+    #songList { flex-grow: 1; display: flex; flex-direction: column; gap: 8px; padding: 10px 0 20px 0; margin: 0; width: 100%; overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; }
     #songList::-webkit-scrollbar { width: 4px; }
     #songList::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
     
-    /* 修正1: 幅を100%に戻し、自然なサイズにする */
     .songBtn { 
-      width: 100%; box-sizing: border-box; margin: 0;
-      background: rgba(30, 30, 30, 0.7); color: var(--text); border: 1px solid var(--border); padding: 30px 15px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; backdrop-filter: blur(5px);
+      width: calc(100% - 30px); margin: 0 auto; background: rgba(30, 30, 30, 0.7); color: var(--text); border: 1px solid var(--border); padding: 25px 15px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; backdrop-filter: blur(5px); box-sizing: border-box;
       transition: transform 0.1s ease, background-color 0.2s ease;
       position: relative; overflow: hidden;
     }
@@ -84,37 +83,32 @@
     .btn-title { font-size: 15px; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .btn-artist { font-size: 11px; color: #888; }
     .btn-date { font-size: 12px; color: var(--accent); font-family: monospace; margin-left: 10px; white-space: nowrap; }
-    .msg-btn { background: transparent; color: var(--accent); border: 1px solid var(--accent); padding: 8px 10px; border-radius: 8px; font-size: 11px; font-weight: bold; cursor: pointer; white-space: nowrap; transition: background 0.2s; }
-    .msg-btn:active { background: rgba(187, 134, 252, 0.2); }
     
-    #msgModal textarea { width: 100%; height: 150px; padding: 15px; font-size: 16px; outline: none; box-sizing: border-box; resize: none; border-radius: 10px;}
-    .add-section { background: #252525; padding: 15px; border-radius: 10px; margin-bottom: 10px; border: 1px solid #444; flex-shrink: 0; }
+    /* --- 記録/追加 タブ内のデザイン統一 --- */
+    .admin-panel { background: #1a1a1a; padding: 15px; border-radius: 12px; margin-bottom: 12px; border: 1px solid var(--border); flex-shrink: 0; }
+    .admin-panel-title { font-size: 11px; color: var(--accent); margin-bottom: 10px; font-weight: bold; display: flex; align-items: center; gap: 5px; }
+    
     .add-row { display: flex; gap: 8px; margin-bottom: 8px; width: 100%; box-sizing: border-box; }
     .add-row input { flex: 1; min-width: 0; padding: 10px; border-radius: 5px; font-size: 13px; box-sizing: border-box; }
     .add-row select { padding: 10px; border-radius: 5px; font-size: 13px; width: 100px; box-sizing: border-box; }
-    .add-btn { width: 100%; padding: 12px; border-radius: 5px; background: var(--primary); color: black; font-weight: bold; border: none; cursor: pointer; transition: opacity 0.2s; }
-    .add-btn:active { opacity: 0.7; }
-    #resultArea { width: 100%; height: 130px; background: #000 !important; color: #0f0 !important; border: none; padding: 15px; font-family: monospace; border-radius: 10px; margin: 10px 0; resize: none; box-sizing: border-box; }
+    .dark-btn { width: 100%; padding: 12px; border-radius: 8px; background: #333; color: white; font-weight: bold; border: 1px solid #444; cursor: pointer; transition: background 0.2s; }
+    .dark-btn:active { background: #444; }
     
-    /* 修正5: プロっぽい管理ツールのグリッドデザイン */
-    .tools-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
-      margin-bottom: 20px;
-    }
-    .tool-btn {
-      display: flex; align-items: center; justify-content: center; gap: 8px;
-      padding: 14px; border-radius: 12px; background: #252525; color: var(--text);
-      border: 1px solid #444; font-weight: bold; font-size: 13px; cursor: pointer;
-      transition: all 0.2s ease; box-sizing: border-box;
-    }
-    .tool-btn:active { transform: scale(0.96); background: #333; }
-    .tool-btn.primary { background: rgba(3, 218, 198, 0.1); border-color: var(--primary); color: var(--primary); }
-    .tool-btn.accent { background: rgba(187, 134, 252, 0.1); border-color: var(--accent); color: var(--accent); }
-    .tool-btn.danger { background: rgba(207, 102, 121, 0.1); border-color: var(--error); color: var(--error); }
-    .tool-btn.full { grid-column: span 2; }
+    /* ログ横割りレイアウト用 */
+    .log-container { display: flex; gap: 10px; margin-bottom: 10px; }
+    #resultArea { flex: 1; height: 160px; background: #0a0a0a !important; color: #bbb !important; border: 1px solid #333 !important; padding: 12px; font-family: monospace; font-size: 12px; border-radius: 10px; resize: none; box-sizing: border-box; line-height: 1.4; }
+    .log-side-btns { display: flex; flex-direction: column; gap: 8px; width: 80px; }
+    .log-side-btns button { flex: 1; border-radius: 8px; font-weight: bold; font-size: 12px; cursor: pointer; border: 1px solid var(--border); display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 4px; padding: 5px; }
+    .btn-copy { background: #252525; color: #ddd; }
+    .btn-image { background: rgba(187, 134, 252, 0.1); color: var(--accent); border-color: rgba(187, 134, 252, 0.3) !important; }
+    .btn-random { background: #252525; color: #ddd; }
 
+    #randomSelectionArea { background: var(--card); padding: 12px; border-radius: 10px; border: 1px dashed var(--accent); margin-bottom: 15px; }
+    
+    /* Modal / Overlay etc. */
+    .msg-btn { background: transparent; color: var(--accent); border: 1px solid var(--accent); padding: 8px 10px; border-radius: 8px; font-size: 11px; font-weight: bold; cursor: pointer; white-space: nowrap; transition: background 0.2s; }
+    .msg-btn:active { background: rgba(187, 134, 252, 0.2); }
+    #msgModal textarea { width: 100%; height: 150px; padding: 15px; font-size: 16px; outline: none; box-sizing: border-box; resize: none; border-radius: 10px;}
     .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 3000; display: none; flex-direction: column; padding: 20px; box-sizing: border-box; }
     .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; color: var(--accent); }
     .modal-content { flex-grow: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
@@ -125,13 +119,10 @@
     .confirm-card { background: var(--card); padding: 25px; border-radius: 20px; width: 85%; text-align: center; border: 1px solid var(--accent); max-width: 400px; }
     
     #loadingOverlay { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); display:none; justify-content:center; align-items:center; z-index:9999; color:var(--accent); font-weight:bold; font-family: 'Orbitron', sans-serif; letter-spacing: 2px; }
-    
     .empty-state { text-align: center; padding: 40px 20px; color: #888; display: flex; flex-direction: column; align-items: center; gap: 10px; }
     .empty-icon { font-size: 48px; opacity: 0.5; }
-
     #toast { position: fixed; bottom: -60px; left: 50%; transform: translateX(-50%); background: var(--accent); color: #000; font-weight: bold; padding: 12px 24px; border-radius: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); z-index: 10000; transition: bottom 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); pointer-events: none; white-space: nowrap; font-size: 14px; }
     #toast.show { bottom: 40px; }
-    
     #pageTopBtn { position: fixed; bottom: 20px; right: 20px; width: 45px; height: 45px; background: var(--accent); color: #000; border: none; border-radius: 50%; font-size: 20px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 2000; box-shadow: 0 4px 10px rgba(0,0,0,0.5); opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
     #pageTopBtn.show { opacity: 1; pointer-events: auto; }
   </style>
@@ -171,28 +162,46 @@
       <div class="sticky-controls">
         <div id="tabContainer">読み込み中...</div>
         <div class="search-row">
-          <input type="text" id="searchBox" placeholder="🔍 曲名・アーティストで検索..." oninput="onSearchInput()">
+          <input type="text" id="searchBox" placeholder="🔍 曲名・アーティスト..." oninput="onSearchInput()">
           <select id="sortSelect" onchange="filterSongs()">
             <option value="artist">アーティスト順</option>
             <option value="name">曲名順</option>
             <option value="date">直近歌った順</option>
           </select>
         </div>
+        <div class="style-toggle">
+          <label><input type="radio" name="playStyle" value="all" checked onchange="filterSongs()"><span>すべて</span></label>
+          <label><input type="radio" name="playStyle" value="弾き語り" onchange="filterSongs()"><span>🎸 弾き語り</span></label>
+          <label><input type="radio" name="playStyle" value="カラオケ" onchange="filterSongs()"><span>🎤 カラオケ</span></label>
+        </div>
       </div>
       <div id="songList"></div>
     </div>
 
     <div id="page-log" class="page">
-      <div id="randomSelectionArea" style="display:none; background: rgba(98, 0, 238, 0.15); padding: 10px; border-radius: 12px; border: 1px dashed #6200ee; margin: 10px 0;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
-          <strong style="color:#bb86fc; font-size:12px;"> 本日の20選</strong>
+      
+      <div id="randomSelectionArea" style="display:none;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+          <strong style="color:var(--accent); font-size:12px;">🎲 本日の20選</strong>
           <button onclick="document.getElementById('randomSelectionArea').style.display='none'" style="background:none; border:none; color:#888; font-size:16px;">×</button>
         </div>
         <div id="randomList" style="display: flex; flex-direction: column; gap: 5px; max-height: 150px; overflow-y: auto;"></div>
       </div>
 
-      <div class="add-section">
-        <div style="font-size:11px; color:var(--primary); margin-bottom:6px; font-weight:bold;">▼ 新曲をNotionへ追加</div>
+      <div class="admin-panel">
+        <div class="admin-panel-title">📝 配信ログ</div>
+        <div class="log-container">
+          <textarea id="resultArea" readonly placeholder="STARTを押すとここにログが溜まります"></textarea>
+          <div class="log-side-btns">
+            <button class="btn-copy" onclick="copyLog()">📋<br>コピー</button>
+            <button class="btn-image" onclick="downloadSetlistImage()">🖼️<br>画像保存</button>
+            <button class="btn-random" onclick="generateRandom20()">🎲<br>20選</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="admin-panel">
+        <div class="admin-panel-title">＋ 新曲をNotionへ追加</div>
         <div class="add-row">
           <input type="text" id="newSong" placeholder="曲名">
           <input type="text" id="newArtist" placeholder="アーティスト">
@@ -203,20 +212,14 @@
             <option value="ワンコーラス">ワンコーラス</option>
             <option value="２番まで">２番まで</option>
           </select>
-          <button class="add-btn" onclick="addNewSong()">Notionに追加</button>
+          <button class="dark-btn" onclick="addNewSong()">Notionに追加</button>
         </div>
       </div>
 
-      <textarea id="resultArea" readonly placeholder="ここにログが溜まります"></textarea>
-
-      <div class="tools-grid">
-        <button class="tool-btn accent" onclick="copyLog()">📋 ログをコピー</button>
-        <button class="tool-btn primary" onclick="downloadSetlistImage()">🖼️ 画像保存</button>
-        <button class="tool-btn" onclick="generateRandom20()" style="border-color: #bb86fc; color: #bb86fc;">🎲 おまかせ20選</button>
-        <button class="tool-btn" onclick="fetchData(true, true)">🔄 最新に同期</button>
-        <button class="tool-btn danger full" onclick="logout()">↳ ログアウト</button>
+      <div style="display:flex; gap:8px; margin-bottom:15px; flex-shrink:0;">
+        <button class="dark-btn" onclick="fetchData(true, true)" style="flex:1;">🔄 最新データに同期</button>
+        <button class="dark-btn" onclick="logout()" style="flex:0.5; color:#cf6679; border-color:#522;">↳ ログアウト</button>
       </div>
-
     </div>
   </div>
 
@@ -237,24 +240,24 @@
     </div>
   </div>
 
-  <div id="confirmOverlay" class="confirm-overlay">
+  <div id="requestConfirmOverlay" class="confirm-overlay" style="z-index: 5000;">
     <div class="confirm-card">
-      <h3 id="confirmTitle" style="color:var(--accent);"></h3>
-      <p style="color: var(--text);">この曲を歌いますか？</p>
+      <h3 id="requestConfirmTitle" style="color:var(--accent);"></h3>
+      <p style="font-size: 14px; margin: 15px 0;">この曲をリクエストしますか？</p>
       <div style="display:flex; gap:12px; margin-top:25px;">
-        <button onclick="closeConfirm()" style="flex:1; padding:15px; background:#444; color:white; border-radius:10px; border:none;">やめる</button>
-        <button id="execSingBtn" style="flex:1; padding:15px; background:var(--primary); color:black; font-weight:bold; border-radius:10px; border:none;">歌う！</button>
+        <button onclick="closeRequestConfirm()" style="flex:1; padding:15px; background:#444; color:white; border-radius:10px; border:none;">やめる</button>
+        <button id="execRequestBtn" style="flex:1; padding:15px; background:var(--accent); color:black; font-weight:bold; border-radius:10px; border:none;">リクエスト！</button>
       </div>
     </div>
   </div>
 
-  <div id="requestConfirmOverlay" class="confirm-overlay">
+  <div id="confirmOverlay" class="confirm-overlay">
     <div class="confirm-card">
-      <h3 id="requestConfirmTitle" style="color:var(--primary);"></h3>
-      <p style="color: var(--text);">この曲をリクエストしますか？</p>
+      <h3 id="confirmTitle" style="color:var(--accent);"></h3>
+      <p>この曲を歌いますか？</p>
       <div style="display:flex; gap:12px; margin-top:25px;">
-        <button onclick="closeRequestConfirm()" style="flex:1; padding:15px; background:#444; color:white; border-radius:10px; border:none;">やめる</button>
-        <button id="execRequestBtn" style="flex:1; padding:15px; background:var(--primary); color:black; font-weight:bold; border-radius:10px; border:none;">送信する</button>
+        <button onclick="closeConfirm()" style="flex:1; padding:15px; background:#444; color:white; border-radius:10px; border:none;">やめる</button>
+        <button id="execSingBtn" style="flex:1; padding:15px; background:var(--primary); color:black; font-weight:bold; border-radius:10px; border:none;">歌う！</button>
       </div>
     </div>
   </div>
@@ -274,15 +277,14 @@
   <button id="pageTopBtn" onclick="scrollToTop()">↑</button>
 
   <script>
-    const GAS_URL = "https://script.google.com/macros/s/AKfycbx85e7B1Ji2QgclQd8TbmB41lsaCypR5366Bp6I08p-GLJ5n4ciP8YmEwgZWndfIgGc-Q/exec";
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbzybaz58iROEL4n8KLkGRD6bHafc2fHpNQu62He1EDrPL4csdpP_ktcVoE66EMFVFQp9w/exec";
     let IS_ADMIN = false;
     let startTime = null, isRunning = false, allSongs = [], currentRequests = [], currentTab = "すべて";
     const OHMORI_GROUP = ["Mrs. GREEN APPLE", "Siip", "大森元貴"];
     
-    let searchTimeout; // デバウンス用
-    let toastTimeout;  // トースト用
+    let searchTimeout;
+    let toastTimeout;
 
-    // --- トースト通知機能 ---
     function showToast(msg, isError = false) {
       const toast = document.getElementById('toast');
       toast.textContent = msg;
@@ -313,13 +315,14 @@
         const response = await fetch(`${GAS_URL}?${queryString}`);
         return await response.json();
       } catch (e) { 
-        console.error("GAS通信エラー:", e); 
-        // 修正2: 画像ダウンロード時などの「Fetchの中断(Abort)」による無害なエラーは通知しない
-        if(e.name !== 'TypeError' && e.message !== 'Failed to fetch') {
+        console.error("GAS通信エラー:", e);
+        if (showLoading) {
           showToast("通信エラーが発生しました", true);
         }
       }
-      finally { if (showLoading) document.getElementById('loadingOverlay').style.display = 'none'; }
+      finally { 
+        if (showLoading) document.getElementById('loadingOverlay').style.display = 'none'; 
+      }
     }
 
     async function tryLogin() { 
@@ -348,12 +351,10 @@
       const loggedIn = localStorage.getItem('isAdminLoggedIn') === 'true' && sessionStorage.getItem('adminPass');
       applyAdminMode(!!loggedIn);
       if (loggedIn) syncWithServer();
-      fetchData(false); // 初期表示はキャッシュを利用するため一旦UIブロックなし
+      fetchData(false); 
     };
 
-    // --- データ取得（キャッシュ化で爆速に） ---
     async function fetchData(showUI = false, forceFetch = false) {
-      // 1. キャッシュがあれば即表示
       const cached = localStorage.getItem('cachedSongs');
       if (cached && !forceFetch) {
         allSongs = JSON.parse(cached);
@@ -362,24 +363,22 @@
         document.getElementById('loadingOverlay').style.display = 'flex';
       }
 
-      // 2. 裏で最新データを取得（次回用・更新用）
       const songs = await callGAS({ action: "getSongs" }, false); 
       if (songs) { 
         allSongs = songs; 
-        localStorage.setItem('cachedSongs', JSON.stringify(songs)); // キャッシュ更新
-        renderAll(); // 最新データで画面を再描画
+        localStorage.setItem('cachedSongs', JSON.stringify(songs)); 
+        renderAll(); 
         if (forceFetch) showToast("最新データに同期しました");
       }
       
       document.getElementById('loadingOverlay').style.display = 'none';
     }
 
-    // --- 検索の軽量化（デバウンス処理） ---
     function onSearchInput() {
       clearTimeout(searchTimeout);
       searchTimeout = setTimeout(() => {
         filterSongs();
-      }, 300); // 0.3秒間入力が止まったら検索開始
+      }, 300); 
     }
 
     function renderAll() {
@@ -410,6 +409,10 @@
     function filterSongs() {
       const query = document.getElementById('searchBox')?.value.toLowerCase() || "";
       const sortType = document.getElementById('sortSelect')?.value || "artist";
+      
+      // 弾き語り・カラオケのトグル取得
+      const styleFilter = document.querySelector('input[name="playStyle"]:checked').value;
+      
       const container = document.getElementById('songList');
       container.innerHTML = '';
       let f = [...allSongs];
@@ -419,13 +422,18 @@
       
       if (query) f = f.filter(s => (s.name || "").toLowerCase().includes(query) || (s.artist || "").toLowerCase().includes(query));
       
-      // --- Empty State（検索結果ゼロの時の表示） ---
+      // トグルでの絞り込み（GAS側で "type" または "style" としてプロパティを渡す必要があります）
+      if (styleFilter !== "all") {
+        // Notionのプロパティ名に合わせて s.type や s.style を参照します（仮に type としています）
+        f = f.filter(s => s.type && s.type.includes(styleFilter));
+      }
+
       if (f.length === 0) {
         container.innerHTML = `
           <div class="empty-state">
             <div class="empty-icon">😢</div>
             <div style="font-weight:bold; font-size:16px;">見つかりませんでした</div>
-            <small>ひらがなや別のキーワードで試してみてね！</small>
+            <small>検索条件やキーワードを変えて試してみてね！</small>
           </div>
         `;
         return;
@@ -470,19 +478,22 @@
       });
     }
 
-    // 修正4: リクエスト時も管理者用と同じお洒落なモーダルUIを使う
     function onSongTap(song, isFromRequest = false, requestId = null) {
       if (IS_ADMIN) {
         showAdminMenu(song, isFromRequest, requestId);
       } else {
-        document.getElementById('requestConfirmTitle').textContent = song.name || "不明な曲";
-        document.getElementById('execRequestBtn').onclick = () => {
+        const titleEl = document.getElementById('requestConfirmTitle');
+        titleEl.textContent = song.name || "不明な曲";
+        
+        const execBtn = document.getElementById('execRequestBtn');
+        execBtn.onclick = () => {
           callGAS({ action: "sendRequest", name: song.name, artist: song.artist }, true)
             .then(() => {
               showToast("リクエストを送信しました！");
               closeRequestConfirm();
             });
         };
+        
         document.getElementById('requestConfirmOverlay').style.display = 'flex';
       }
     }
@@ -665,7 +676,7 @@
       showToast("Notionに追加しました");
       document.getElementById('newSong').value = '';
       document.getElementById('newArtist').value = '';
-      fetchData(false, true); // 強制リフレッシュ
+      fetchData(false, true); 
     }
 
     function switchView(view) {
@@ -710,7 +721,6 @@
       area.scrollIntoView({ behavior: 'smooth' });
     }
 
-    // --- セトリ画像ダウンロード機能 ---
     function downloadSetlistImage() {
       const logText = document.getElementById('resultArea').value.trim();
       if (!logText) return showToast("ログが空です。曲を記録してください", true);
@@ -730,7 +740,7 @@
       const fontSize = 34;
       const titleHeight = 120;
 
-      canvas.width = 1080; 
+      canvas.width = 1080;
       canvas.height = padding * 2 + titleHeight + (songs.length * lineHeight);
 
       ctx.fillStyle = "#ffffff";
@@ -761,12 +771,12 @@
       const dateStr = new Date().toLocaleDateString('ja-JP').replace(/\//g, '');
       link.download = `HanamiYa_Setlist_${dateStr}.png`;
       link.href = canvas.toDataURL('image/png');
-      link.click();
-      
-      showToast("画像をダウンロードしました！");
+      setTimeout(() => {
+        link.click();
+        showToast("画像をダウンロードしました！");
+      }, 100);
     }
 
-    // --- その他ヘルパー関数・初期化 ---
     setInterval(() => { if (IS_ADMIN) syncWithServer(); }, 3000);
     
     async function syncWithServer() {
@@ -800,7 +810,6 @@
 
     function closeConfirm() { document.getElementById('confirmOverlay').style.display = 'none'; const oldLinks = document.getElementById('adminLinkGroup'); if (oldLinks) oldLinks.remove(); }
     
-    // 修正4: 新しく作ったリクエスト用モーダルを閉じる関数
     function closeRequestConfirm() { document.getElementById('requestConfirmOverlay').style.display = 'none'; }
     
     function closeRequestModal() { document.getElementById('requestModal').style.display = 'none'; }
