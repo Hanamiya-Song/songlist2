@@ -395,20 +395,26 @@
       let acousticTotal = 0; 
       let karaokeTotal = 0;  
 
+      // --- 【診断】ループの外に出して、最初の1回だけ表示させる ---
+      if (allSongs.length > 0) {
+        alert("データの項目名: " + Object.keys(allSongs[0]).join(", ") + "\n1曲目のタイプ: " + allSongs[0].type);
+      }
+      // ----------------------------------------------------
+
       allSongs.forEach(s => {
         const artist = s.artist || "不明";
 
         if (OHMORI_GROUP.includes(artist)) ohmoriTotal++;
         
-        // ---【修正】タブの件数カウントも新しい判定式を使う ---
+        // タブの件数カウント
         if (isTargetType(s, "弾き語り")) acousticTotal++;
         if (isTargetType(s, "カラオケ")) karaokeTotal++;
-        // ----------------------------------------------------
 
         if (!OHMORI_GROUP.includes(artist)) {
           counts[artist] = (counts[artist] || 0) + 1;
         }
       });
+      
 
       const majorArtists = Object.keys(counts).filter(a => counts[a] >= 10).sort();
       
