@@ -395,33 +395,21 @@
     function renderAll() {
       const counts = {};
       let ohmoriTotal = 0;
-      let acousticTotal = 0; 
-      let karaokeTotal = 0;  
 
       allSongs.forEach(s => {
         const artist = s.artist || "不明";
-
-        console.log(s); 
-        console.log(s.type);
         
         if (OHMORI_GROUP.includes(artist)) ohmoriTotal++;
         
-        // タブの件数カウント
-        if (isTargetType(s, "弾き語り")) acousticTotal++;
-        if (isTargetType(s, "カラオケ")) karaokeTotal++;
-
+        // アーティスト別の曲数をカウント（大森元貴以外）
         if (!OHMORI_GROUP.includes(artist)) {
           counts[artist] = (counts[artist] || 0) + 1;
         }
       });
       
-
       const majorArtists = Object.keys(counts).filter(a => counts[a] >= 10).sort();
       
       const tabs = [{ id: "すべて", label: `すべて (${allSongs.length})` }];
-      
-      if (acousticTotal > 0) tabs.push({ id: "弾き語り", label: `弾き語り (${acousticTotal})` });
-      if (karaokeTotal > 0) tabs.push({ id: "カラオケ", label: `カラオケ (${karaokeTotal})` });
       
       if (ohmoriTotal > 0) tabs.push({ id: "大森元貴曲", label: `大森元貴曲 (${ohmoriTotal})` });
       majorArtists.forEach(name => tabs.push({ id: name, label: `${name} (${counts[name]})` }));
