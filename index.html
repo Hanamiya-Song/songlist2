@@ -381,102 +381,116 @@
       }, 300); 
     }
 
-    function renderAll() {
-      const counts = {};
-      let ohmoriTotal = 0;
-      allSongs.forEach(s => {
-        const artist = s.artist || "不明";
-        if (OHMORI_GROUP.includes(artist)) ohmoriTotal++;
-        else counts[artist] = (counts[artist] || 0) + 1;
-      });
-      const majorArtists = Object.keys(counts).filter(a => counts[a] >= 10).sort();
-      const tabs = [{ id: "すべて", label: `すべて (${allSongs.length})` }];
-      if (ohmoriTotal > 0) tabs.push({ id: "大森元貴曲", label: `大森元貴曲 (${ohmoriTotal})` });
-      majorArtists.forEach(name => tabs.push({ id: name, label: `${name} (${counts[name]})` }));
-      
-      const container = document.getElementById('tabContainer');
-      container.innerHTML = '';
-      tabs.forEach(tab => {
-        const div = document.createElement('div');
-        div.className = `artist-tab ${tab.id === currentTab ? 'active' : ''}`;
-        div.textContent = tab.label;
-        div.onclick = () => { currentTab = tab.id; renderAll(); };
-        container.appendChild(div);
-      });
-      filterSongs();
+    // --- タブの生成処理 (renderAll) ---
+function renderAll() {
+  const counts = {};
+  let ohmoriTotal = 0;
+  let acousticTotal = 0; // 弾き語りカウント用
+  let karaokeTotal = 0;  // カラオケカウント用
+
+  allSongs.forEach(s => {
+    const artist = s.artist || "不明";
+    const type = s.type || "";
+
+    // 特殊カテゴリのカウント
+    if (OHMORI_GROUP.includes(artist)) ohmoriTotal++;
+    if (type.includes("弾き語り")) acousticTotal++;
+    if (type.includes("カラオケ")) karaokeTotal++;
+
+    // アーティスト別のカウント（10曲以上の場合のみタブ化するため）
+    if (!OHMORI_GROUP.includes(artist)) {
+      counts[artist] = (counts[artist] || 0) + 1;
     }
+  });
 
-    function filterSongs() {
-      const query = document.getElementById('searchBox')?.value.toLowerCase() || "";
-      const sortType = document.getElementById('sortSelect')?.value || "artist";
-      
-      // 弾き語り・カラオケのトグル取得
-      const styleFilter = document.querySelector('input[name="playStyle"]:checked').value;
-      
-      const container = document.getElementById('songList');
-      container.innerHTML = '';
-      let f = [...allSongs];
-      
-      if (currentTab === "大森元貴曲") f = f.filter(s => OHMORI_GROUP.includes(s.artist || ""));
-      else if (currentTab !== "すべて") f = f.filter(s => (s.artist || "") === currentTab);
-      
-      if (query) f = f.filter(s => (s.name || "").toLowerCase().includes(query) || (s.artist || "").toLowerCase().includes(query));
-      
-      // トグルでの絞り込み（GAS側で "type" または "style" としてプロパティを渡す必要があります）
-      if (styleFilter !== "all") {
-        // Notionのプロパティ名に合わせて s.type や s.style を参照します（仮に type としています）
-        f = f.filter(s => s.type && s.type.includes(styleFilter));
-      }
+  const majorArtists = Object.keys(counts).filter(a => counts[a] >= 10).sort();
+  
+  // タブの定義
+  const tabs = [{ id: "すべて", label: `すべて (${allSongs.length})` }];
+  
+  // 固定タブ（弾き語り・カラオケ）を追加
+  if (acousticTotal > 0) tabs.push({ id: "弾き語り", label: `弾き語り (${acousticTotal})` });
+  if (karaokeTotal > 0) tabs.push({ id: "カラオケ", label: `カラオケ (${karaokeTotal})` });
+  
+  // その他の特殊タブとアーティストタブ
+  if (ohmoriTotal > 0) tabs.push({ id: "大森元貴曲", label: `大森元貴曲 (${ohmoriTotal})` });
+  majorArtists.forEach(name => tabs.push({ id: name, label: `${name} (${counts[name]})` }));
+  
+  const container = document.getElementById('tabContainer');
+  container.innerHTML = '';
+  tabs.forEach(tab => {
+    const div = document.createElement('div');
+    div.className = `artist-tab ${tab.id === currentTab ? 'active' : ''}`;
+    div.textContent = tab.label;
+    div.onclick = () => { currentTab = tab.id; renderAll(); };
+    container.appendChild(div);
+  });
+  filterSongs();
+}
 
-      if (f.length === 0) {
-        container.innerHTML = `
-          <div class="empty-state">
-            <div class="empty-icon">😢</div>
-            <div style="font-weight:bold; font-size:16px;">見つかりませんでした</div>
-            <small>検索条件やキーワードを変えて試してみてね！</small>
-          </div>
-        `;
-        return;
-      }
+// --- フィルタリング処理 (filterSongs) ---
+function filterSongs() {
+  const query = document.getElementById('searchBox')?.value.toLowerCase() || "";
+  const sortType = document.getElementById('sortSelect')?.value || "artist";
+  const container = document.getElementById('songList');
+  container.innerHTML = '';
+  let f = [...allSongs];
+  
+  // タブによる絞り込みロジックを修正
+  if (currentTab === "大森元貴曲") {
+    f = f.filter(s => OHMORI_GROUP.includes(s.artist || ""));
+  } else if (currentTab === "弾き語り") {
+    f = f.filter(s => (s.type || "").includes("弾き語り"));
+  } else if (currentTab === "カラオケ") {
+    f = f.filter(s => (s.type || "").includes("カラオケ"));
+  } else if (currentTab !== "すべて") {
+    // アーティストタブの場合
+    f = f.filter(s => (s.artist || "") === currentTab);
+  }
+  
+  // 検索クエリでの絞り込み
+  if (query) {
+    f = f.filter(s => 
+      (s.name || "").toLowerCase().includes(query) || 
+      (s.artist || "").toLowerCase().includes(query)
+    );
+  }
 
-      f.sort((a, b) => {
-        if (sortType === "name") return (a.name || "").localeCompare((b.name || ""), 'ja');
-        if (sortType === "date") {
-          const dateA = new Date(a.lastSung || "1900-01-01");
-          const dateB = new Date(b.lastSung || "1900-01-01");
-          return dateB - dateA;
-        }
-        return (a.artist || "").localeCompare((b.artist || ""), 'ja');
-      });
-      
-      f.forEach(s => {
-        const btn = document.createElement('button');
-        btn.className = 'songBtn';
-        btn.onclick = () => onSongTap(s);
-        
-        const mainDiv = document.createElement('div');
-        mainDiv.className = 'btn-main';
-        
-        const titleSpan = document.createElement('span');
-        titleSpan.className = 'btn-title';
-        titleSpan.textContent = s.name || "無名";
-        
-        const artistSpan = document.createElement('span');
-        artistSpan.className = 'btn-artist';
-        artistSpan.textContent = s.artist || "不明";
-        
-        mainDiv.appendChild(titleSpan);
-        mainDiv.appendChild(artistSpan);
-        
-        const dateSpan = document.createElement('span');
-        dateSpan.className = 'btn-date';
-        dateSpan.textContent = (s.lastSung && s.lastSung !== "1900-01-01") ? s.lastSung : "";
-        
-        btn.appendChild(mainDiv);
-        btn.appendChild(dateSpan);
-        container.appendChild(btn);
-      });
+  // ソート処理（既存のまま）
+  f.sort((a, b) => {
+    if (sortType === "name") return (a.name || "").localeCompare((b.name || ""), 'ja');
+    if (sortType === "date") {
+      const dateA = new Date(a.lastSung || "1900-01-01");
+      const dateB = new Date(b.lastSung || "1900-01-01");
+      return dateB - dateA;
     }
+    return (a.artist || "").localeCompare((b.artist || ""), 'ja');
+  });
+  
+  // 表示（既存のまま）
+  if (f.length === 0) {
+    container.innerHTML = `<div class="empty-state"><div class="empty-icon">😢</div><div>見つかりませんでした</div></div>`;
+    return;
+  }
+
+  f.forEach(s => {
+    const btn = document.createElement('button');
+    btn.className = 'songBtn';
+    btn.onclick = () => onSongTap(s);
+    
+    const mainDiv = document.createElement('div');
+    mainDiv.className = 'btn-main';
+    mainDiv.innerHTML = `<span class="btn-title">${s.name || "無名"}</span><span class="btn-artist">${s.artist || "不明"}</span>`;
+    
+    const dateSpan = document.createElement('span');
+    dateSpan.className = 'btn-date';
+    dateSpan.textContent = (s.lastSung && s.lastSung !== "1900-01-01") ? s.lastSung : "";
+    
+    btn.appendChild(mainDiv);
+    btn.appendChild(dateSpan);
+    container.appendChild(btn);
+  });
+}
 
     function onSongTap(song, isFromRequest = false, requestId = null) {
       if (IS_ADMIN) {
