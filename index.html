@@ -34,7 +34,83 @@
     .sub-desc { font-size: 10px; color: #888; margin-top: 2px; }
     #timerDisplay { font-size: 26px; font-weight: bold; font-family: monospace; color: var(--primary); display: none; }
     .admin-only { display: none; }
-    #loginBtn { background: transparent; color: #666; border: 1px solid #444; padding: 8px 10px; border-radius: 5px; font-size: 11px; cursor: pointer; white-space: nowrap; }
+    /* ログインボタンを消す代わりに使うメニューボタン */
+    /* 三本線メニューボタン（トグルの横に並ぶ） */
+    .menu-trigger {
+      background: #252525;
+      border: 1px solid var(--border);
+      color: var(--text);
+      width: 34px;  /* トグルの高さに合わせたサイズ */
+      height: 30px; 
+      border-radius: 6px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 3px;
+      cursor: pointer;
+      transition: all 0.2s;
+      flex-shrink: 0;
+      z-index: 3500;
+    }
+
+    .menu-trigger span {
+      display: block;
+      width: 16px;
+      height: 2px;
+      background: #888; /* 線の色 */
+      transition: 0.3s;
+    }
+
+    /* 右から出てくるメニュー本体 */
+    #sideMenu {
+      position: fixed;
+      top: 0;
+      right: -250px; /* 最初は隠しておく */
+      width: 250px;
+      height: 100%;
+      background: #1a1a1a;
+      z-index: 4000;
+      box-shadow: -5px 0 15px rgba(0,0,0,0.5);
+      transition: right 0.3s ease;
+      padding: 60px 20px 20px;
+      box-sizing: border-box;
+    }
+
+    /* メニューが開いた状態 */
+    #sideMenu.open {
+      right: 0;
+    }
+
+    /* メニュー内の各項目 */
+    .menu-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 18px 15px; /* スマホで押しやすい高さ */
+      color: var(--text);
+      text-decoration: none;
+      border-bottom: 1px solid #2a2a2a;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background 0.2s;
+    }
+    
+    .menu-item:active { 
+      background: #333; 
+    }
+
+    /* メニューの背景（暗くなる部分） */
+    #menuOverlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.6);
+      display: none;
+      z-index: 3900;
+    }
     #actionBtn { background: var(--success); color: white; border: none; padding: 10px 20px; border-radius: 20px; font-size: 14px; font-weight: bold; min-width: 95px; cursor: pointer; }
     #actionBtn.active { background: var(--error); }
     .view-selector { display: none; background: #252525; border-radius: 10px; padding: 3px; margin-top: 10px; gap: 4px; }
@@ -210,7 +286,11 @@
           <div class="header-toggle-btn" id="tgl-karaoke" onclick="filterByType('カラオケ')">カラオケ</div>
         </div>
         
-        <button id="loginBtn" onclick="tryLogin()">LogIn</button>
+        <div style="display:flex; gap:8px; align-items:center;">
+    <div class="menu-trigger" onclick="toggleMenu()">
+        <span></span><span></span><span></span>
+    </div>
+</div>
       </div>
     </div>
 
@@ -674,7 +754,15 @@
       if (isAdmin) {
         setInterval(checkRequests, 3000);
       }
+      updateMenuContent(isAdmin);
     }
+
+    function logout() {
+    if (confirm("ログアウトしますか？")) {
+        applyAdminMode(false);
+        showToast("ログアウトしました");
+    }
+}
 
     async function sendChatMessage() {
       const inputEl = document.getElementById('chatInput');
@@ -926,10 +1014,57 @@
       }
     });
 
+    function toggleMenu() {
+    const menu = document.getElementById('sideMenu');
+    const overlay = document.getElementById('menuOverlay');
+    const isOpen = menu.classList.contains('open');
+
+    if (isOpen) {
+        menu.classList.remove('open');
+        overlay.style.display = 'none';
+    } else {
+        menu.classList.add('open');
+        overlay.style.display = 'block';
+    }
+}
+
+// 既存のログイン成功時の処理に追記
+// applyAdminMode(true) が呼ばれたらメニューの中身をログアウトに変えるなどの処理も可能です。
+    
+    
     function scrollToTop() {
       const songList = document.getElementById('songList');
       if (songList) songList.scrollTo({ top: 0, behavior: 'smooth' });
     }
+
+    function toggleMenu() {
+    const menu = document.getElementById('sideMenu');
+    const overlay = document.getElementById('menuOverlay');
+    if (!menu || !overlay) return;
+    
+    if (menu.classList.contains('open')) {
+        menu.classList.remove('open');
+        overlay.style.display = 'none';
+    } else {
+        menu.classList.add('open');
+        overlay.style.display = 'block';
+    }
+}
+    
   </script>
+  <div id="menuOverlay" onclick="toggleMenu()"></div>
+<div id="sideMenu">
+    <div style="font-size: 12px; color: var(--accent); margin-bottom: 20px; font-weight: bold; letter-spacing: 1px;">MENU</div>
+    
+    <div class="menu-item" onclick="tryLogin(); toggleMenu();">
+        <span>🔐</span> 管理者ログイン
+    </div>
+    <div class="menu-item" onclick="window.open('https://twitter.com/YourAccount', '_blank');">
+        <span>🐦</span> 公式X (Twitter)
+    </div>
+    <div class="menu-item" onclick="toggleMenu()">
+        <span>❌</span> 閉じる
+    </div>
+</div>
 </body>
 </html>
