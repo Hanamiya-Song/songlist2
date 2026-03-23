@@ -10,7 +10,7 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
   <title>HanamiYa</title>
@@ -38,77 +38,74 @@
     #actionBtn { background: var(--success); color: white; border: none; padding: 10px 20px; border-radius: 20px; font-size: 14px; font-weight: bold; min-width: 95px; cursor: pointer; }
     #actionBtn.active { background: var(--error); }
     .view-selector { display: none; background: #252525; border-radius: 10px; padding: 3px; margin-top: 10px; gap: 4px; }
-    .view-tab { flex: 1; display: flex; align-items: center; justify-content: center; padding: 8px; font-size: 13px; font-weight: bold; border-radius: 8px; cursor: pointer; color: #888; }
+    .view-tab { flex: 1; display: flex; align-items: center; justify-content: center; padding: 8px; font-size: 13px; font-weight: bold; border-radius: 8px; cursor: pointer; color: #888; transition: all 0.2s; }
     .view-tab.active { background: var(--card); color: var(--accent); }
     
     .content-area { flex-grow: 1; position: relative; overflow: hidden; display: flex; flex-direction: column; max-width: 800px; margin: 0 auto; width: 100%; }
     
-    /* 修正ポイント1: 親の余白を完全になくし、画面いっぱいまで使えるようにする */
     .page { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; flex-direction: column; padding: 0; box-sizing: border-box; overflow: hidden; }
     .page.active { display: flex; }
 
-    /* 修正ポイント2: ログページだけは個別に余白を設定 */
     #page-log { padding: 15px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
 
-    /* 修正ポイント3: 検索エリアのマイナスマージンなどをやめ、素直に左右15pxの余白を作る */
     .sticky-controls { position: sticky; top: 0; z-index: 50; background: rgba(18, 18, 18, 0.95); backdrop-filter: blur(8px); margin: 0; width: 100%; padding: 0 15px 10px 15px; border-bottom: 1px solid var(--border); box-sizing: border-box; }
     #tabContainer { display: flex; overflow-x: auto; gap: 8px; margin: 0; width: 100%; padding: 12px 0; flex-shrink: 0; -webkit-overflow-scrolling: touch; scrollbar-width: none; box-sizing: border-box; }
     #tabContainer::-webkit-scrollbar { display: none; }
-    .artist-tab { padding: 8px 12px; background: var(--card); border: 1px solid var(--border); border-radius: 20px; font-size: 12px; white-space: nowrap; cursor: pointer; color: #888; flex-shrink: 0; }
+    .artist-tab { padding: 8px 12px; background: var(--card); border: 1px solid var(--border); border-radius: 20px; font-size: 12px; white-space: nowrap; cursor: pointer; color: #888; flex-shrink: 0; transition: all 0.2s;}
     .artist-tab.active { background: var(--accent); color: #000; font-weight: bold; border-color: var(--accent); }
-    input, select, textarea { background: var(--card) !important; color: white !important; border: 1px solid var(--border) !important; }
-    .search-row { display: flex; gap: 8px; height: 46px; }
-    #searchBox { flex: 1; height: 100%; padding: 0 12px; border-radius: 10px; font-size: 16px; outline: none; box-sizing: border-box; margin: 0; }
-    #sortSelect { width: 105px; height: 100%; border-radius: 10px; font-size: 11px; outline: none; cursor: pointer; padding: 0 5px; box-sizing: border-box; text-align: center; }
+    input, select, textarea { background: var(--card) !important; color: white !important; border: 1px solid var(--border) !important; transition: border-color 0.2s; }
+    input:focus, textarea:focus { border-color: var(--accent) !important; outline: none; }
     
-    /* 修正ポイント4: 曲リスト自体は画面幅100%にして、スクロールバーを右端に張り付ける */
-    #songList {
-      flex-grow: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      padding: 10px 0 20px 0; /* 上下の余白のみ */
-      margin: 0; /* 左右の余白はゼロ */
-      width: 100%;
-      overflow-y: auto;
-      overflow-x: hidden; 
-      -webkit-overflow-scrolling: touch;
-    }
+    .search-row { display: flex; gap: 8px; height: 46px; }
+    #searchBox { flex: 1; height: 100%; padding: 0 12px; border-radius: 10px; font-size: 16px; box-sizing: border-box; margin: 0; }
+    #sortSelect { width: 105px; height: 100%; border-radius: 10px; font-size: 11px; cursor: pointer; padding: 0 5px; box-sizing: border-box; text-align: center; }
+    
+    #songList { flex-grow: 1; display: flex; flex-direction: column; gap: 8px; padding: 10px 0 20px 0; margin: 0; width: 100%; overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; }
     #songList::-webkit-scrollbar { width: 4px; }
     #songList::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
     
-    /* 修正ポイント5: ボタンの幅を「画面幅から30px引いたサイズ」にし、中央寄せ（margin: 0 auto）にする */
+    /* 波紋（タップ）エフェクトの追加 */
     .songBtn { 
-      width: calc(100% - 30px); 
-      margin: 0 auto; 
-      background: rgba(30, 30, 30, 0.7); color: var(--text); border: 1px solid var(--border); padding: 15px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; backdrop-filter: blur(5px); box-sizing: border-box; 
+      width: calc(100% - 30px); margin: 0 auto; background: rgba(30, 30, 30, 0.7); color: var(--text); border: 1px solid var(--border); padding: 15px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; backdrop-filter: blur(5px); box-sizing: border-box;
+      transition: transform 0.1s ease, background-color 0.2s ease;
+      position: relative; overflow: hidden;
     }
+    .songBtn:active { transform: scale(0.97); background-color: rgba(255, 255, 255, 0.15); }
 
     .btn-main { display: flex; flex-direction: column; flex: 1; text-align: left; overflow: hidden; }
     .btn-title { font-size: 15px; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .btn-artist { font-size: 11px; color: #888; }
     .btn-date { font-size: 12px; color: var(--accent); font-family: monospace; margin-left: 10px; white-space: nowrap; }
-    .msg-btn { background: transparent; color: var(--accent); border: 1px solid var(--accent); padding: 8px 10px; border-radius: 8px; font-size: 11px; font-weight: bold; cursor: pointer; white-space: nowrap; }
-    #msgModal textarea { width: 100%; height: 150px; padding: 15px; font-size: 16px; outline: none; box-sizing: border-box; resize: none; }
+    .msg-btn { background: transparent; color: var(--accent); border: 1px solid var(--accent); padding: 8px 10px; border-radius: 8px; font-size: 11px; font-weight: bold; cursor: pointer; white-space: nowrap; transition: background 0.2s; }
+    .msg-btn:active { background: rgba(187, 134, 252, 0.2); }
+    
+    #msgModal textarea { width: 100%; height: 150px; padding: 15px; font-size: 16px; outline: none; box-sizing: border-box; resize: none; border-radius: 10px;}
     .add-section { background: #252525; padding: 15px; border-radius: 10px; margin-bottom: 10px; border: 1px solid #444; flex-shrink: 0; }
     .add-row { display: flex; gap: 8px; margin-bottom: 8px; width: 100%; box-sizing: border-box; }
     .add-row input { flex: 1; min-width: 0; padding: 10px; border-radius: 5px; font-size: 13px; box-sizing: border-box; }
     .add-row select { padding: 10px; border-radius: 5px; font-size: 13px; width: 100px; box-sizing: border-box; }
-    .add-btn { width: 100%; padding: 12px; border-radius: 5px; background: var(--primary); color: black; font-weight: bold; border: none; cursor: pointer; }
+    .add-btn { width: 100%; padding: 12px; border-radius: 5px; background: var(--primary); color: black; font-weight: bold; border: none; cursor: pointer; transition: opacity 0.2s; }
+    .add-btn:active { opacity: 0.7; }
     #resultArea { width: 100%; height: 130px; background: #000 !important; color: #0f0 !important; border: none; padding: 15px; font-family: monospace; border-radius: 10px; margin: 10px 0; resize: none; box-sizing: border-box; }
+    
     .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 3000; display: none; flex-direction: column; padding: 20px; box-sizing: border-box; }
     .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; color: var(--accent); }
     .modal-content { flex-grow: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
     .request-item { display: flex; align-items: center; background: #252525; padding: 12px; border-radius: 10px; border: 1px solid #333; gap: 10px; }
     .del-btn { background: var(--error); color: white; border: none; border-radius: 5px; padding: 8px 12px; font-size: 12px; cursor: pointer; }
+    
     .confirm-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; justify-content: center; align-items: center; z-index: 4000; }
     .confirm-card { background: var(--card); padding: 25px; border-radius: 20px; width: 85%; text-align: center; border: 1px solid var(--accent); max-width: 400px; }
-    #loadingOverlay { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); display:none; justify-content:center; align-items:center; z-index:9999; color:white; font-weight:bold; }
     
-    #modalSongList, #messageList { max-height: 200px; overflow-y: auto; padding-right: 5px; }
-    #modalSongList::-webkit-scrollbar, #messageList::-webkit-scrollbar, .page::-webkit-scrollbar { width: 4px; }
-    #modalSongList::-webkit-scrollbar-thumb, #messageList::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 10px; }
-    .page::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
+    #loadingOverlay { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); display:none; justify-content:center; align-items:center; z-index:9999; color:var(--accent); font-weight:bold; font-family: 'Orbitron', sans-serif; letter-spacing: 2px; }
+    
+    /* Empty State (検索結果ゼロ) のデザイン */
+    .empty-state { text-align: center; padding: 40px 20px; color: #888; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+    .empty-icon { font-size: 48px; opacity: 0.5; }
+
+    /* トースト通知（スナックバー）のデザイン */
+    #toast { position: fixed; bottom: -60px; left: 50%; transform: translateX(-50%); background: var(--accent); color: #000; font-weight: bold; padding: 12px 24px; border-radius: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); z-index: 10000; transition: bottom 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); pointer-events: none; white-space: nowrap; font-size: 14px; }
+    #toast.show { bottom: 40px; }
     
     #pageTopBtn { position: fixed; bottom: 20px; right: 20px; width: 45px; height: 45px; background: var(--accent); color: #000; border: none; border-radius: 50%; font-size: 20px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 2000; box-shadow: 0 4px 10px rgba(0,0,0,0.5); opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
     #pageTopBtn.show { opacity: 1; pointer-events: auto; }
@@ -116,7 +113,8 @@
 </head>
 <body>
 
-  <div id="loadingOverlay">読み込み中...</div>
+  <div id="loadingOverlay">LOADING DATA...</div>
+  <div id="toast">メッセージ</div>
 
   <div class="header-fixed">
     <div class="header-row">
@@ -148,7 +146,7 @@
       <div class="sticky-controls">
         <div id="tabContainer">読み込み中...</div>
         <div class="search-row">
-          <input type="text" id="searchBox" placeholder="🔍 曲名・アーティストで検索..." oninput="filterSongs()">
+          <input type="text" id="searchBox" placeholder="🔍 曲名・アーティストで検索..." oninput="onSearchInput()">
           <select id="sortSelect" onchange="filterSongs()">
             <option value="artist">アーティスト順</option>
             <option value="name">曲名順</option>
@@ -186,11 +184,14 @@
 
       <textarea id="resultArea" readonly placeholder="ここにログが溜まります"></textarea>
 
-      <div style="display:flex; gap:10px; margin-bottom:15px; flex-shrink:0;">
-        <button onclick="copyLog()" style="flex:1; padding:12px; border-radius:10px; background:var(--accent); border:none; font-weight:bold; color:black;">📋 コピー</button>
-        <button onclick="generateRandom20()" style="flex:1; padding:12px; border-radius:10px; background:#6200ee; border:none; color:white; font-weight:bold;">🎲 20選</button>
-        <button onclick="fetchData(true)" style="flex:0.7; padding:12px; border-radius:10px; background:#444; border:none; color:white;">🔄 同期</button>
-        <button onclick="logout()" style="padding:12px; border-radius:10px; background:var(--error); border:none; color:white;">↳</button>
+      <div style="display:flex; gap:8px; margin-bottom:8px; flex-shrink:0;">
+        <button onclick="copyLog()" style="flex:1; padding:12px; border-radius:10px; background:var(--accent); border:none; font-weight:bold; color:black; cursor:pointer;">📋 コピー</button>
+        <button onclick="downloadSetlistImage()" style="flex:1; padding:12px; border-radius:10px; background:var(--primary); border:none; font-weight:bold; color:black; cursor:pointer;">🖼️ 画像保存</button>
+        <button onclick="generateRandom20()" style="flex:1; padding:12px; border-radius:10px; background:#6200ee; border:none; color:white; font-weight:bold; cursor:pointer;">🎲 20選</button>
+      </div>
+      <div style="display:flex; gap:8px; margin-bottom:15px; flex-shrink:0;">
+        <button onclick="fetchData(true, true)" style="flex:1; padding:12px; border-radius:10px; background:#444; border:none; color:white; cursor:pointer;">🔄 最新データに同期</button>
+        <button onclick="logout()" style="flex:0.5; padding:12px; border-radius:10px; background:var(--error); border:none; color:white; cursor:pointer;">↳ ログアウト</button>
       </div>
     </div>
   </div>
@@ -242,17 +243,25 @@
     let IS_ADMIN = false;
     let startTime = null, isRunning = false, allSongs = [], currentRequests = [], currentTab = "すべて";
     const OHMORI_GROUP = ["Mrs. GREEN APPLE", "Siip", "大森元貴"];
+    
+    let searchTimeout; // デバウンス用
+    let toastTimeout;  // トースト用
+
+    // --- トースト通知機能 ---
+    function showToast(msg, isError = false) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.style.background = isError ? "var(--error)" : "var(--accent)";
+      toast.style.color = isError ? "white" : "black";
+      toast.classList.add('show');
+      clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => { toast.classList.remove('show'); }, 3000);
+    }
 
     function sanitize(str) {
       if (typeof str !== 'string') return str;
       return str.replace(/[&<>"']/g, function(m) {
-        return {
-          '&': '&amp;',
-          '<': '&lt;',
-          '>': '&gt;',
-          '"': '&quot;',
-          "'": '&#39;'
-        }[m];
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m];
       });
     }
 
@@ -268,7 +277,10 @@
       try {
         const response = await fetch(`${GAS_URL}?${queryString}`);
         return await response.json();
-      } catch (e) { console.error("GAS通信エラー:", e); }
+      } catch (e) { 
+        console.error("GAS通信エラー:", e); 
+        showToast("通信エラーが発生しました", true);
+      }
       finally { if (showLoading) document.getElementById('loadingOverlay').style.display = 'none'; }
     }
 
@@ -281,6 +293,7 @@
       
       if (res && res.success) {
         applyAdminMode(true);
+        showToast("ログインしました");
       } else {
         sessionStorage.removeItem('adminPass'); 
         alert("パスワードが間違っています");
@@ -297,68 +310,38 @@
       const loggedIn = localStorage.getItem('isAdminLoggedIn') === 'true' && sessionStorage.getItem('adminPass');
       applyAdminMode(!!loggedIn);
       if (loggedIn) syncWithServer();
-      fetchData(true);
+      fetchData(false); // 初期表示はキャッシュを利用するため一旦UIブロックなし
     };
 
-    function generateRandom20() {
-      if (allSongs.length === 0) return alert("曲リストが空です。同期してください。");
-      let shuffled = [...allSongs].sort(() => 0.5 - Math.random());
-      const selected = shuffled.slice(0, 20);
-      const container = document.getElementById('randomList');
-      const area = document.getElementById('randomSelectionArea');
-      container.innerHTML = '';
-      area.style.display = 'block';
-
-      selected.forEach(s => {
-        const row = document.createElement('div');
-        row.style.cssText = "display:flex; gap:10px; align-items:center; background:var(--card); padding:10px; border-radius:8px; border:1px solid #333;";
-        
-        const info = document.createElement('div');
-        info.style.cssText = "flex:1; cursor:pointer; display:flex; flex-direction:column;";
-        
-        const nameSpan = document.createElement('span');
-        nameSpan.style.cssText = "font-size:13px; font-weight:bold;";
-        nameSpan.textContent = s.name || "不明";
-        
-        const artistSmall = document.createElement('small');
-        artistSmall.style.cssText = "color:#888;";
-        artistSmall.textContent = s.artist || "不明";
-        
-        info.appendChild(nameSpan);
-        info.appendChild(artistSmall);
-        info.onclick = () => onSongTap(s);
-        
-        const delBtn = document.createElement('button');
-        delBtn.textContent = "×";
-        delBtn.style.cssText = "background:none; border:none; color:var(--error); font-size:18px; padding:0 10px; cursor:pointer;";
-        delBtn.onclick = () => row.remove();
-        
-        row.appendChild(info);
-        row.appendChild(delBtn);
-        container.appendChild(row);
-      });
-      area.scrollIntoView({ behavior: 'smooth' });
-    }
-    
-    async function syncWithServer() {
-      if (!IS_ADMIN) return;
-      const res = await callGAS({ action: 'checkExternalStart' });
-      if (res && res.startTime) {
-        const serverTime = parseInt(res.startTime);
-        if (!isRunning || Math.abs(startTime - serverTime) > 1000) {
-          startTime = serverTime;
-          isRunning = true;
-          updateButtonUI(true);
-        }
-      } else if (isRunning) {
-        isRunning = false;
-        updateButtonUI(false);
+    // --- データ取得（キャッシュ化で爆速に） ---
+    async function fetchData(showUI = false, forceFetch = false) {
+      // 1. キャッシュがあれば即表示
+      const cached = localStorage.getItem('cachedSongs');
+      if (cached && !forceFetch) {
+        allSongs = JSON.parse(cached);
+        renderAll();
+      } else if (showUI || !cached) {
+        document.getElementById('loadingOverlay').style.display = 'flex';
       }
+
+      // 2. 裏で最新データを取得（次回用・更新用）
+      const songs = await callGAS({ action: "getSongs" }, false); 
+      if (songs) { 
+        allSongs = songs; 
+        localStorage.setItem('cachedSongs', JSON.stringify(songs)); // キャッシュ更新
+        renderAll(); // 最新データで画面を再描画
+        if (forceFetch) showToast("最新データに同期しました");
+      }
+      
+      document.getElementById('loadingOverlay').style.display = 'none';
     }
 
-    async function fetchData(showUI = false) {
-      const songs = await callGAS({ action: "getSongs" }, showUI);
-      if (songs) { allSongs = songs; renderAll(); }
+    // --- 検索の軽量化（デバウンス処理） ---
+    function onSearchInput() {
+      clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(() => {
+        filterSongs();
+      }, 300); // 0.3秒間入力が止まったら検索開始
     }
 
     function renderAll() {
@@ -398,6 +381,18 @@
       
       if (query) f = f.filter(s => (s.name || "").toLowerCase().includes(query) || (s.artist || "").toLowerCase().includes(query));
       
+      // --- Empty State（検索結果ゼロの時の表示） ---
+      if (f.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">😢</div>
+            <div style="font-weight:bold; font-size:16px;">見つかりませんでした</div>
+            <small>ひらがなや別のキーワードで試してみてね！</small>
+          </div>
+        `;
+        return;
+      }
+
       f.sort((a, b) => {
         if (sortType === "name") return (a.name || "").localeCompare((b.name || ""), 'ja');
         if (sortType === "date") {
@@ -429,7 +424,6 @@
         
         const dateSpan = document.createElement('span');
         dateSpan.className = 'btn-date';
-        dateSpan.style.cssText = "font-size:10px; color:var(--accent); font-family:monospace; margin-left:10px; white-space:nowrap;";
         dateSpan.textContent = (s.lastSung && s.lastSung !== "1900-01-01") ? s.lastSung : "";
         
         btn.appendChild(mainDiv);
@@ -442,7 +436,8 @@
       if (IS_ADMIN) showAdminMenu(song, isFromRequest, requestId);
       else {
         if (confirm(`「${song.name || "この曲"}」をリクエストしますか？`)) {
-          callGAS({ action: "sendRequest", name: song.name, artist: song.artist }, true).then(() => alert("送信しました！"));
+          callGAS({ action: "sendRequest", name: song.name, artist: song.artist }, true)
+            .then(() => showToast("リクエストを送信しました！"));
         }
       }
     }
@@ -457,7 +452,7 @@
       linkGroup.id = 'adminLinkGroup';
       linkGroup.style = "display:flex; flex-direction:column; gap:10px; margin-bottom:20px;";
       
-      const links = [{ label: " U-FRET", url: song.ufret }, { label: " Chordwiki", url: song.chordwiki }, { label: " リンネのコードブック", url: song.linne }];
+      const links = [{ label: " U-FRET", url: song.ufret }, { label: " Chordwiki", url: song.chordwiki }];
       let hasLink = false;
       links.forEach(link => {
         if (link.url && link.url.trim() !== "") {
@@ -514,16 +509,10 @@
       
       area.value += logLine;
       localStorage.setItem('setlist_backup', area.value);
+      showToast("記録しました！");
       
       if (song.id) callGAS({ action: "updateDate", id: song.id });
     }
-
-    window.addEventListener('load', () => {
-      const backup = localStorage.getItem('setlist_backup');
-      if (backup) {
-        document.getElementById('resultArea').value = backup;
-      }
-    });
 
     function applyAdminMode(isAdmin) {
       IS_ADMIN = isAdmin;
@@ -542,16 +531,11 @@
       if (!rawMsg.trim()) return;
 
       const safeMsg = sanitize(rawMsg);
-
-      await callGAS({ 
-        action: "sendRequest", 
-        name: safeMsg,
-        artist: "💬 MESSAGE" 
-      }, true);
+      await callGAS({ action: "sendRequest", name: safeMsg, artist: "💬 MESSAGE" }, true);
 
       inputEl.value = "";
       closeMsgModal();
-      alert("メッセージを送信しました！");
+      showToast("メッセージを送信しました！");
     }
 
     function openMsgModal() { document.getElementById('msgModal').style.display = 'flex'; }
@@ -575,8 +559,7 @@
       const songList = document.getElementById('modalSongList'); 
       const messageList = document.getElementById('messageList');
       modal.style.display = 'flex';
-      songList.innerHTML = '';
-      messageList.innerHTML = '';
+      songList.innerHTML = ''; messageList.innerHTML = '';
 
       if (currentRequests.length === 0) {
         songList.innerHTML = '<div style="text-align:center; padding:10px; color:#666;">なし</div>';
@@ -601,23 +584,16 @@
         artistSmall.style.color = "#888";
         artistSmall.textContent = isChat ? '' : (req.artist || "");
         
-        textWrapper.appendChild(titleB);
-        textWrapper.appendChild(artistSmall);
+        textWrapper.appendChild(titleB); textWrapper.appendChild(artistSmall);
         
         const delBtn = document.createElement('button');
-        delBtn.className = 'del-btn';
-        delBtn.textContent = '削除';
-        delBtn.onclick = (e) => {
-          e.stopPropagation();
-          deleteReq(req.id);
-        };
+        delBtn.className = 'del-btn'; delBtn.textContent = '削除';
+        delBtn.onclick = (e) => { e.stopPropagation(); deleteReq(req.id); };
         
-        div.appendChild(textWrapper);
-        div.appendChild(delBtn);
+        div.appendChild(textWrapper); div.appendChild(delBtn);
 
-        if (isChat) { 
-          messageList.appendChild(div); 
-        } else {
+        if (isChat) messageList.appendChild(div); 
+        else {
           div.style.cursor = 'pointer';
           div.onclick = () => {
             const fullSongData = allSongs.find(s => (s.name || "").trim() === (req.name || "").trim());
@@ -631,8 +607,7 @@
     async function deleteReq(id) {
       if (confirm("削除しますか？")) {
         await callGAS({ action: "deleteRequest", id: id }, true);
-        checkRequests();
-        openRequestModal();
+        checkRequests(); openRequestModal(); showToast("削除しました");
       }
     }
 
@@ -642,8 +617,10 @@
       const status = document.getElementById('newStatus').value;
       if (!name || !artist) return alert("入力してください");
       await callGAS({ action: "addSong", name, artist, status }, true);
-      alert("Notionに追加しました");
-      fetchData(false);
+      showToast("Notionに追加しました");
+      document.getElementById('newSong').value = '';
+      document.getElementById('newArtist').value = '';
+      fetchData(false, true); // 強制リフレッシュ
     }
 
     function switchView(view) {
@@ -653,8 +630,121 @@
       document.getElementById('nav-' + view).classList.add('active');
     }
 
+    function generateRandom20() {
+      if (allSongs.length === 0) return showToast("曲リストが空です", true);
+      let shuffled = [...allSongs].sort(() => 0.5 - Math.random());
+      const selected = shuffled.slice(0, 20);
+      const container = document.getElementById('randomList');
+      const area = document.getElementById('randomSelectionArea');
+      container.innerHTML = ''; area.style.display = 'block';
+
+      selected.forEach(s => {
+        const row = document.createElement('div');
+        row.style.cssText = "display:flex; gap:10px; align-items:center; background:var(--card); padding:10px; border-radius:8px; border:1px solid #333;";
+        
+        const info = document.createElement('div');
+        info.style.cssText = "flex:1; cursor:pointer; display:flex; flex-direction:column;";
+        
+        const nameSpan = document.createElement('span');
+        nameSpan.style.cssText = "font-size:13px; font-weight:bold;";
+        nameSpan.textContent = s.name || "不明";
+        const artistSmall = document.createElement('small');
+        artistSmall.style.cssText = "color:#888;";
+        artistSmall.textContent = s.artist || "不明";
+        
+        info.appendChild(nameSpan); info.appendChild(artistSmall);
+        info.onclick = () => onSongTap(s);
+        
+        const delBtn = document.createElement('button');
+        delBtn.textContent = "×";
+        delBtn.style.cssText = "background:none; border:none; color:var(--error); font-size:18px; padding:0 10px; cursor:pointer;";
+        delBtn.onclick = () => row.remove();
+        
+        row.appendChild(info); row.appendChild(delBtn); container.appendChild(row);
+      });
+      area.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // --- セトリ画像ダウンロード機能 ---
+    function downloadSetlistImage() {
+      const logText = document.getElementById('resultArea').value.trim();
+      if (!logText) return showToast("ログが空です。曲を記録してください", true);
+
+      const lines = logText.split('\n').filter(l => l.trim() !== '');
+      
+      // 時間表示（例: 00:00 や 1:05:20）を正規表現で削り、曲名だけを取り出してナンバリングする
+      const songs = lines.map((line, index) => {
+        const songName = line.replace(/^\d+:\d+(:\d+)?\s*/, '').trim();
+        return `${index + 1}. ${songName}`;
+      });
+
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+
+      // 余白とサイズの設定
+      const padding = 80;
+      const lineHeight = 70;
+      const fontSize = 34;
+      const titleHeight = 120;
+
+      // キャンバスサイズ（縦幅は曲数に合わせて自動延長）
+      canvas.width = 1080; // 高画質（Instagram/X対応）
+      canvas.height = padding * 2 + titleHeight + (songs.length * lineHeight);
+
+      // 背景色（真っ白）
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // タイトル
+      ctx.fillStyle = "#111111";
+      ctx.font = `bold 56px 'Segoe UI', 'Noto Sans JP', sans-serif`;
+      ctx.textAlign = "center";
+      ctx.fillText("本日のセットリスト", canvas.width / 2, padding + 56);
+
+      // 区切り線
+      ctx.beginPath();
+      ctx.moveTo(padding, padding + titleHeight - 30);
+      ctx.lineTo(canvas.width - padding, padding + titleHeight - 30);
+      ctx.strokeStyle = "#dddddd";
+      ctx.lineWidth = 3;
+      ctx.stroke();
+
+      // 曲名の描画
+      ctx.font = `bold ${fontSize}px 'Segoe UI', 'Noto Sans JP', sans-serif`;
+      ctx.fillStyle = "#333333";
+      ctx.textAlign = "left";
+
+      const startY = padding + titleHeight + fontSize;
+      songs.forEach((song, i) => {
+        ctx.fillText(song, padding, startY + (i * lineHeight));
+      });
+
+      // ダウンロード処理
+      const link = document.createElement('a');
+      const dateStr = new Date().toLocaleDateString('ja-JP').replace(/\//g, '');
+      link.download = `HanamiYa_Setlist_${dateStr}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+      
+      showToast("画像をダウンロードしました！");
+    }
+
+    // --- その他ヘルパー関数・初期化 ---
     setInterval(() => { if (IS_ADMIN) syncWithServer(); }, 3000);
     
+    async function syncWithServer() {
+      if (!IS_ADMIN) return;
+      const res = await callGAS({ action: 'checkExternalStart' });
+      if (res && res.startTime) {
+        const serverTime = parseInt(res.startTime);
+        if (!isRunning || Math.abs(startTime - serverTime) > 1000) {
+          startTime = serverTime; isRunning = true; updateButtonUI(true);
+        }
+      } else if (isRunning) {
+        isRunning = false; updateButtonUI(false);
+      }
+    }
+
     setInterval(() => {
       if (isRunning && startTime) {
         const diff = Math.max(0, Date.now() - startTime);
@@ -664,42 +754,35 @@
         
         const display = document.getElementById('timerDisplay');
         if (display) {
-          if (hours > 0) {
-            display.textContent = `${hours}:${min.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
-          } else {
-            display.textContent = `${min}:${sec.toString().padStart(2, '0')}`;
-          }
+          display.textContent = hours > 0 
+            ? `${hours}:${min.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`
+            : `${min.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
         }
       }
     }, 1000);
 
     function closeConfirm() { document.getElementById('confirmOverlay').style.display = 'none'; const oldLinks = document.getElementById('adminLinkGroup'); if (oldLinks) oldLinks.remove(); }
     function closeRequestModal() { document.getElementById('requestModal').style.display = 'none'; }
-    function copyLog() { navigator.clipboard.writeText(document.getElementById('resultArea').value); alert("コピーしました"); }
+    function copyLog() { navigator.clipboard.writeText(document.getElementById('resultArea').value); showToast("コピーしました！"); }
+
+    window.addEventListener('load', () => {
+      const backup = localStorage.getItem('setlist_backup');
+      if (backup) document.getElementById('resultArea').value = backup;
+    });
 
     window.addEventListener('DOMContentLoaded', () => {
       const songList = document.getElementById('songList');
       const topBtn = document.getElementById('pageTopBtn');
-
       if (songList) {
         songList.addEventListener('scroll', () => {
-          if (songList.scrollTop > 50) {
-            topBtn.classList.add('show');
-          } else {
-            topBtn.classList.remove('show');
-          }
+          songList.scrollTop > 50 ? topBtn.classList.add('show') : topBtn.classList.remove('show');
         });
       }
     });
 
     function scrollToTop() {
       const songList = document.getElementById('songList');
-      if (songList) {
-        songList.scrollTo({
-          top: 0,
-          behavior: 'smooth'
-        });
-      }
+      if (songList) songList.scrollTo({ top: 0, behavior: 'smooth' });
     }
   </script>
 </body>
