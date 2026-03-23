@@ -96,49 +96,32 @@
 
     #randomSelectionArea { background: var(--card); padding: 12px; border-radius: 10px; border: 1px dashed var(--accent); margin-bottom: 15px; }
 
-    /* 右端の引き出しメッセージボタン */
+    /* 右下のメッセージボタン（画面右端に縦長で張り付くスタイル） */
     #floatingMsgBtn {
       position: fixed;
-      /* 普段はボタンの大部分を右側に隠しておく（-80pxくらい） */
-      right: -85px; 
-      bottom: 120px;
-      width: 120px;          /* 横に長い土台にする */
-      height: 44px;           /* 握りやすい高さ */
-      background: var(--accent);
-      color: #000000;
+      right: 0;           /* 画面の右端にぴったり */
+      bottom: 120px;      /* トップへ戻るボタンの上、少し高めに配置 */
+      width: 35px;        /* 横幅を極端に狭く */
+      height: 100px;       /* 縦に長く */
+      background: var(--accent); /* 色は元のアクセントカラー（薄紫） */
+      color: #000000;    /* 文字（アイコン）は黒でハッキリと */
       border: none;
-      /* 左側だけ丸めて「引き手」のようにする */
-      border-radius: 22px 0 0 22px; 
+      /* 右側の角を丸くせず、左側だけ丸くして「張り付き感」を出す */
+      border-radius: 10px 0 0 10px; 
+      font-size: 16px;    /* 文字（アイコン）を小さく */
       display: flex;
       align-items: center;
-      padding-left: 12px;     /* アイコンを左端（見える位置）に配置 */
-      gap: 10px;
+      justify-content: center;
+      box-shadow: -2px 0 10px rgba(0,0,0,0.5); /* 左側にだけ影をつける */
       z-index: 2500;
       cursor: pointer;
-      box-shadow: -3px 0 10px rgba(0,0,0,0.5);
-      /* 動きをヌルっとさせる（ここが重要！） */
-      transition: right 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
 
-    /* ボタンを触ったとき（hover）や、
-       スマホで一度タップしたときに「引き出された状態」にする 
-    */
-    #floatingMsgBtn:hover,
+    /* ホバー（タップ）した時に少しだけ左にせり出す演出 */
     #floatingMsgBtn:active {
-      right: 0; /* 画面内に戻ってくる */
-    }
-
-    /* アイコン部分を強調 */
-    .msg-icon {
-      font-size: 20px;
-      flex-shrink: 0;
-    }
-
-    /* 「メッセージ」の文字を横書きでハッキリ出す */
-    .msg-text-horizontal {
-      font-size: 13px;
-      font-weight: 900;
-      white-space: nowrap; /* 改行させない */
+      transform: translateX(-3px);
+      width: 30px; /* 少し太くして押しやすく */
     }
     
     /* ヘッダーに置くトグルのスタイル */
