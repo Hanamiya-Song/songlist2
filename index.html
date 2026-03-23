@@ -282,18 +282,16 @@
     let toastTimeout;
 
     // --- 【修正】完全版のターゲット判定処理 ---
+    // --- 【確定版】GASから届く文字列データに対応 ---
     const isTargetType = (song, target) => {
+      // GASで type という項目名にして送っているので song.type を見る
       if (!song.type) return false;
       
-      // Notionから配列で来た場合も、カンマ区切りで来た場合も対応
-      const typeArray = Array.isArray(song.type) 
-        ? song.type.map(t => String(t).trim()) 
-        : String(song.type).split(',').map(t => t.trim());
-      
-      // 余計な空白を消したうえで、完全一致するかどうか判定
-      return typeArray.includes(target);
+      // song.type は "弾き語り" や "弾き語り,J-POP" という文字列なので、
+      // includes で「弾き語り」などの文字が含まれているかチェックする
+      return String(song.type).includes(target);
     };
-    // ------------------------------------------
+    // --------------------------------------------
 
     function showToast(msg, isError = false) {
       const toast = document.getElementById('toast');
