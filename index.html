@@ -22,6 +22,7 @@
     body {
       font-family: 'Segoe UI', 'Noto Sans JP', sans-serif;
       margin: 0; padding: 0;
+      color: var(--text); /* 全体の基本文字色を白系に固定 */
       background: linear-gradient(rgba(18, 18, 18, 0.85), rgba(18, 18, 18, 0.85)), url("https://github.com/iceplagaming-cmyk/songlist/blob/main/7808d4bc-bbc7-446e-85a7-ea2b581164bb.jpg?raw=true");
       background-repeat: no-repeat; background-position: center; background-size: cover; background-attachment: fixed;
       min-height: 100vh; min-height: 100dvh; display: flex; flex-direction: column;
@@ -60,13 +61,20 @@
     #searchBox { flex: 1; height: 100%; padding: 0 12px; border-radius: 10px; font-size: 16px; box-sizing: border-box; margin: 0; }
     #sortSelect { width: 105px; height: 100%; border-radius: 10px; font-size: 11px; cursor: pointer; padding: 0 5px; box-sizing: border-box; text-align: center; }
     
-    #songList { flex-grow: 1; display: flex; flex-direction: column; gap: 8px; padding: 10px 0 20px 0; margin: 0; width: 100%; overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; }
+    /* 修正1: リストの余白を最適化し、ボタンが細くならないようにする */
+    #songList { 
+      flex-grow: 1; display: flex; flex-direction: column; gap: 8px; 
+      padding: 10px 15px 20px 15px; /* 左右に15pxの余白を持たせる */
+      margin: 0; width: 100%; box-sizing: border-box; 
+      overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; 
+    }
     #songList::-webkit-scrollbar { width: 4px; }
     #songList::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
     
-    /* 波紋（タップ）エフェクトの追加 */
+    /* 修正1: 幅を100%に戻し、自然なサイズにする */
     .songBtn { 
-      width: calc(100% - 30px); margin: 0 auto; background: rgba(30, 30, 30, 0.7); color: var(--text); border: 1px solid var(--border); padding: 15px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; backdrop-filter: blur(5px); box-sizing: border-box;
+      width: 100%; box-sizing: border-box; margin: 0;
+      background: rgba(30, 30, 30, 0.7); color: var(--text); border: 1px solid var(--border); padding: 15px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; backdrop-filter: blur(5px);
       transition: transform 0.1s ease, background-color 0.2s ease;
       position: relative; overflow: hidden;
     }
@@ -88,6 +96,25 @@
     .add-btn:active { opacity: 0.7; }
     #resultArea { width: 100%; height: 130px; background: #000 !important; color: #0f0 !important; border: none; padding: 15px; font-family: monospace; border-radius: 10px; margin: 10px 0; resize: none; box-sizing: border-box; }
     
+    /* 修正5: プロっぽい管理ツールのグリッドデザイン */
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .tool-btn {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 14px; border-radius: 12px; background: #252525; color: var(--text);
+      border: 1px solid #444; font-weight: bold; font-size: 13px; cursor: pointer;
+      transition: all 0.2s ease; box-sizing: border-box;
+    }
+    .tool-btn:active { transform: scale(0.96); background: #333; }
+    .tool-btn.primary { background: rgba(3, 218, 198, 0.1); border-color: var(--primary); color: var(--primary); }
+    .tool-btn.accent { background: rgba(187, 134, 252, 0.1); border-color: var(--accent); color: var(--accent); }
+    .tool-btn.danger { background: rgba(207, 102, 121, 0.1); border-color: var(--error); color: var(--error); }
+    .tool-btn.full { grid-column: span 2; }
+
     .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 3000; display: none; flex-direction: column; padding: 20px; box-sizing: border-box; }
     .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; color: var(--accent); }
     .modal-content { flex-grow: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
@@ -99,11 +126,9 @@
     
     #loadingOverlay { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); display:none; justify-content:center; align-items:center; z-index:9999; color:var(--accent); font-weight:bold; font-family: 'Orbitron', sans-serif; letter-spacing: 2px; }
     
-    /* Empty State (検索結果ゼロ) のデザイン */
     .empty-state { text-align: center; padding: 40px 20px; color: #888; display: flex; flex-direction: column; align-items: center; gap: 10px; }
     .empty-icon { font-size: 48px; opacity: 0.5; }
 
-    /* トースト通知（スナックバー）のデザイン */
     #toast { position: fixed; bottom: -60px; left: 50%; transform: translateX(-50%); background: var(--accent); color: #000; font-weight: bold; padding: 12px 24px; border-radius: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); z-index: 10000; transition: bottom 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); pointer-events: none; white-space: nowrap; font-size: 14px; }
     #toast.show { bottom: 40px; }
     
@@ -184,15 +209,14 @@
 
       <textarea id="resultArea" readonly placeholder="ここにログが溜まります"></textarea>
 
-      <div style="display:flex; gap:8px; margin-bottom:8px; flex-shrink:0;">
-        <button onclick="copyLog()" style="flex:1; padding:12px; border-radius:10px; background:var(--accent); border:none; font-weight:bold; color:black; cursor:pointer;">📋 コピー</button>
-        <button onclick="downloadSetlistImage()" style="flex:1; padding:12px; border-radius:10px; background:var(--primary); border:none; font-weight:bold; color:black; cursor:pointer;">🖼️ 画像保存</button>
-        <button onclick="generateRandom20()" style="flex:1; padding:12px; border-radius:10px; background:#6200ee; border:none; color:white; font-weight:bold; cursor:pointer;">🎲 20選</button>
+      <div class="tools-grid">
+        <button class="tool-btn accent" onclick="copyLog()">📋 ログをコピー</button>
+        <button class="tool-btn primary" onclick="downloadSetlistImage()">🖼️ 画像保存</button>
+        <button class="tool-btn" onclick="generateRandom20()" style="border-color: #bb86fc; color: #bb86fc;">🎲 おまかせ20選</button>
+        <button class="tool-btn" onclick="fetchData(true, true)">🔄 最新に同期</button>
+        <button class="tool-btn danger full" onclick="logout()">↳ ログアウト</button>
       </div>
-      <div style="display:flex; gap:8px; margin-bottom:15px; flex-shrink:0;">
-        <button onclick="fetchData(true, true)" style="flex:1; padding:12px; border-radius:10px; background:#444; border:none; color:white; cursor:pointer;">🔄 最新データに同期</button>
-        <button onclick="logout()" style="flex:0.5; padding:12px; border-radius:10px; background:var(--error); border:none; color:white; cursor:pointer;">↳ ログアウト</button>
-      </div>
+
     </div>
   </div>
 
@@ -216,10 +240,21 @@
   <div id="confirmOverlay" class="confirm-overlay">
     <div class="confirm-card">
       <h3 id="confirmTitle" style="color:var(--accent);"></h3>
-      <p>この曲を歌いますか？</p>
+      <p style="color: var(--text);">この曲を歌いますか？</p>
       <div style="display:flex; gap:12px; margin-top:25px;">
         <button onclick="closeConfirm()" style="flex:1; padding:15px; background:#444; color:white; border-radius:10px; border:none;">やめる</button>
         <button id="execSingBtn" style="flex:1; padding:15px; background:var(--primary); color:black; font-weight:bold; border-radius:10px; border:none;">歌う！</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="requestConfirmOverlay" class="confirm-overlay">
+    <div class="confirm-card">
+      <h3 id="requestConfirmTitle" style="color:var(--primary);"></h3>
+      <p style="color: var(--text);">この曲をリクエストしますか？</p>
+      <div style="display:flex; gap:12px; margin-top:25px;">
+        <button onclick="closeRequestConfirm()" style="flex:1; padding:15px; background:#444; color:white; border-radius:10px; border:none;">やめる</button>
+        <button id="execRequestBtn" style="flex:1; padding:15px; background:var(--primary); color:black; font-weight:bold; border-radius:10px; border:none;">送信する</button>
       </div>
     </div>
   </div>
@@ -279,7 +314,10 @@
         return await response.json();
       } catch (e) { 
         console.error("GAS通信エラー:", e); 
-        showToast("通信エラーが発生しました", true);
+        // 修正2: 画像ダウンロード時などの「Fetchの中断(Abort)」による無害なエラーは通知しない
+        if(e.name !== 'TypeError' && e.message !== 'Failed to fetch') {
+          showToast("通信エラーが発生しました", true);
+        }
       }
       finally { if (showLoading) document.getElementById('loadingOverlay').style.display = 'none'; }
     }
@@ -432,13 +470,20 @@
       });
     }
 
+    // 修正4: リクエスト時も管理者用と同じお洒落なモーダルUIを使う
     function onSongTap(song, isFromRequest = false, requestId = null) {
-      if (IS_ADMIN) showAdminMenu(song, isFromRequest, requestId);
-      else {
-        if (confirm(`「${song.name || "この曲"}」をリクエストしますか？`)) {
+      if (IS_ADMIN) {
+        showAdminMenu(song, isFromRequest, requestId);
+      } else {
+        document.getElementById('requestConfirmTitle').textContent = song.name || "不明な曲";
+        document.getElementById('execRequestBtn').onclick = () => {
           callGAS({ action: "sendRequest", name: song.name, artist: song.artist }, true)
-            .then(() => showToast("リクエストを送信しました！"));
-        }
+            .then(() => {
+              showToast("リクエストを送信しました！");
+              closeRequestConfirm();
+            });
+        };
+        document.getElementById('requestConfirmOverlay').style.display = 'flex';
       }
     }
 
@@ -672,7 +717,6 @@
 
       const lines = logText.split('\n').filter(l => l.trim() !== '');
       
-      // 時間表示（例: 00:00 や 1:05:20）を正規表現で削り、曲名だけを取り出してナンバリングする
       const songs = lines.map((line, index) => {
         const songName = line.replace(/^\d+:\d+(:\d+)?\s*/, '').trim();
         return `${index + 1}. ${songName}`;
@@ -681,27 +725,22 @@
       const canvas = document.createElement('canvas');
       const ctx = canvas.getContext('2d');
 
-      // 余白とサイズの設定
       const padding = 80;
       const lineHeight = 70;
       const fontSize = 34;
       const titleHeight = 120;
 
-      // キャンバスサイズ（縦幅は曲数に合わせて自動延長）
-      canvas.width = 1080; // 高画質（Instagram/X対応）
+      canvas.width = 1080; 
       canvas.height = padding * 2 + titleHeight + (songs.length * lineHeight);
 
-      // 背景色（真っ白）
       ctx.fillStyle = "#ffffff";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      // タイトル
       ctx.fillStyle = "#111111";
       ctx.font = `bold 56px 'Segoe UI', 'Noto Sans JP', sans-serif`;
       ctx.textAlign = "center";
       ctx.fillText("本日のセットリスト", canvas.width / 2, padding + 56);
 
-      // 区切り線
       ctx.beginPath();
       ctx.moveTo(padding, padding + titleHeight - 30);
       ctx.lineTo(canvas.width - padding, padding + titleHeight - 30);
@@ -709,7 +748,6 @@
       ctx.lineWidth = 3;
       ctx.stroke();
 
-      // 曲名の描画
       ctx.font = `bold ${fontSize}px 'Segoe UI', 'Noto Sans JP', sans-serif`;
       ctx.fillStyle = "#333333";
       ctx.textAlign = "left";
@@ -719,7 +757,6 @@
         ctx.fillText(song, padding, startY + (i * lineHeight));
       });
 
-      // ダウンロード処理
       const link = document.createElement('a');
       const dateStr = new Date().toLocaleDateString('ja-JP').replace(/\//g, '');
       link.download = `HanamiYa_Setlist_${dateStr}.png`;
@@ -762,6 +799,10 @@
     }, 1000);
 
     function closeConfirm() { document.getElementById('confirmOverlay').style.display = 'none'; const oldLinks = document.getElementById('adminLinkGroup'); if (oldLinks) oldLinks.remove(); }
+    
+    // 修正4: 新しく作ったリクエスト用モーダルを閉じる関数
+    function closeRequestConfirm() { document.getElementById('requestConfirmOverlay').style.display = 'none'; }
+    
     function closeRequestModal() { document.getElementById('requestModal').style.display = 'none'; }
     function copyLog() { navigator.clipboard.writeText(document.getElementById('resultArea').value); showToast("コピーしました！"); }
 
