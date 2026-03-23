@@ -96,30 +96,34 @@
 
     #randomSelectionArea { background: var(--card); padding: 12px; border-radius: 10px; border: 1px dashed var(--accent); margin-bottom: 15px; }
 
-    /* 右下のメッセージボタン（吹き出し風） */
+    /* 右下のメッセージボタン（画面右端に縦長で張り付くスタイル） */
     #floatingMsgBtn {
       position: fixed;
-      right: 20px;
-      bottom: 85px; /* トップへ戻るボタンの上 */
-      width: 58px;
-      height: 58px;
-      background: var(--accent);
-      color: #000;
+      right: 0;           /* 画面の右端にぴったり */
+      bottom: 120px;      /* トップへ戻るボタンの上、少し高めに配置 */
+      width: 25px;        /* 横幅を極端に狭く */
+      height: 80px;       /* 縦に長く */
+      background: var(--accent); /* 色は元のアクセントカラー（薄紫） */
+      color: #000000;    /* 文字（アイコン）は黒でハッキリと */
       border: none;
-      /* 吹き出しの形：左上・右上・右下・左下 の丸み。右下を0にして尖らせる */
-      border-radius: 50% 50% 0 50%; 
-      font-size: 26px;
+      /* 右側の角を丸くせず、左側だけ丸くして「張り付き感」を出す */
+      border-radius: 20px 0 0 20px; 
+      font-size: 16px;    /* 文字（アイコン）を小さく */
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+      box-shadow: -2px 0 10px rgba(0,0,0,0.5); /* 左側にだけ影をつける */
       z-index: 2500;
       cursor: pointer;
-      transition: transform 0.2s;
+      transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
-    #floatingMsgBtn:active { transform: scale(0.9); }
 
-    /* ヘッダーに置くトグルのスタイル */
+    /* ホバー（タップ）した時に少しだけ左にせり出す演出 */
+    #floatingMsgBtn:active {
+      transform: translateX(-3px);
+      width: 30px; /* 少し太くして押しやすく */
+    }
+    
     /* ヘッダーに置くトグルのスタイル */
     .header-toggle {
       display: flex;
