@@ -398,6 +398,8 @@
       allSongs.forEach(s => {
         const artist = s.artist || "不明";
 
+        console.log(s.type);
+
         if (OHMORI_GROUP.includes(artist)) ohmoriTotal++;
         
         // タブの件数カウント
