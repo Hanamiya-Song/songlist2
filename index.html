@@ -61,7 +61,6 @@
     #searchBox { flex: 1; height: 100%; padding: 0 12px; border-radius: 10px; font-size: 16px; box-sizing: border-box; margin: 0; }
     #sortSelect { width: 105px; height: 100%; border-radius: 10px; font-size: 11px; cursor: pointer; padding: 0 5px; box-sizing: border-box; text-align: center; }
 
-    /* --- スタイル切り替え（弾き語り/カラオケ）トグル --- */
     .style-toggle { display: flex; background: var(--card); border-radius: 10px; overflow: hidden; border: 1px solid var(--border); height: 35px;}
     .style-toggle label { flex: 1; text-align: center; color: #888; font-size: 13px; font-weight: bold; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center;}
     .style-toggle input[type="radio"] { display: none; }
@@ -84,7 +83,6 @@
     .btn-artist { font-size: 11px; color: #888; }
     .btn-date { font-size: 12px; color: var(--accent); font-family: monospace; margin-left: 10px; white-space: nowrap; }
     
-    /* --- 記録/追加 タブ内のデザイン統一 --- */
     .admin-panel { background: #1a1a1a; padding: 15px; border-radius: 12px; margin-bottom: 12px; border: 1px solid var(--border); flex-shrink: 0; }
     .admin-panel-title { font-size: 11px; color: var(--accent); margin-bottom: 10px; font-weight: bold; display: flex; align-items: center; gap: 5px; }
     
@@ -94,7 +92,6 @@
     .dark-btn { width: 100%; padding: 12px; border-radius: 8px; background: #333; color: white; font-weight: bold; border: 1px solid #444; cursor: pointer; transition: background 0.2s; }
     .dark-btn:active { background: #444; }
     
-    /* ログ横割りレイアウト用 */
     .log-container { display: flex; gap: 10px; margin-bottom: 10px; }
     #resultArea { flex: 1; height: 160px; background: #0a0a0a !important; color: #bbb !important; border: 1px solid #333 !important; padding: 12px; font-family: monospace; font-size: 12px; border-radius: 10px; resize: none; box-sizing: border-box; line-height: 1.4; }
     .log-side-btns { display: flex; flex-direction: column; gap: 8px; width: 80px; }
@@ -105,7 +102,6 @@
 
     #randomSelectionArea { background: var(--card); padding: 12px; border-radius: 10px; border: 1px dashed var(--accent); margin-bottom: 15px; }
     
-    /* Modal / Overlay etc. */
     .msg-btn { background: transparent; color: var(--accent); border: 1px solid var(--accent); padding: 8px 10px; border-radius: 8px; font-size: 11px; font-weight: bold; cursor: pointer; white-space: nowrap; transition: background 0.2s; }
     .msg-btn:active { background: rgba(187, 134, 252, 0.2); }
     #msgModal textarea { width: 100%; height: 150px; padding: 15px; font-size: 16px; outline: none; box-sizing: border-box; resize: none; border-radius: 10px;}
@@ -285,6 +281,20 @@
     let searchTimeout;
     let toastTimeout;
 
+    // --- 【修正】完全版のターゲット判定処理 ---
+    const isTargetType = (song, target) => {
+      if (!song.type) return false;
+      
+      // Notionから配列で来た場合も、カンマ区切りで来た場合も対応
+      const typeArray = Array.isArray(song.type) 
+        ? song.type.map(t => String(t).trim()) 
+        : String(song.type).split(',').map(t => t.trim());
+      
+      // 余計な空白を消したうえで、完全一致するかどうか判定
+      return typeArray.includes(target);
+    };
+    // ------------------------------------------
+
     function showToast(msg, isError = false) {
       const toast = document.getElementById('toast');
       toast.textContent = msg;
@@ -389,11 +399,13 @@
 
       allSongs.forEach(s => {
         const artist = s.artist || "不明";
-        const type = String(s.type || "");
 
         if (OHMORI_GROUP.includes(artist)) ohmoriTotal++;
-        if (type.includes("弾き語り")) acousticTotal++;
-        if (type.includes("カラオケ")) karaokeTotal++;
+        
+        // ---【修正】タブの件数カウントも新しい判定式を使う ---
+        if (isTargetType(s, "弾き語り")) acousticTotal++;
+        if (isTargetType(s, "カラオケ")) karaokeTotal++;
+        // ----------------------------------------------------
 
         if (!OHMORI_GROUP.includes(artist)) {
           counts[artist] = (counts[artist] || 0) + 1;
@@ -429,13 +441,6 @@
       container.innerHTML = '';
       
       let f = [...allSongs];
-
-      // 【修正】型や空白を吸収するターゲット判定関数
-      const isTargetType = (song, target) => {
-        if (!song.type) return false;
-        if (Array.isArray(song.type)) return song.type.includes(target);
-        return String(song.type).includes(target);
-      };
 
       // --- 1. タブによる絞り込み ---
       if (currentTab === "すべて") {
@@ -726,12 +731,10 @@
         info.style.cssText = "flex:1; cursor:pointer; display:flex; flex-direction:column;";
         
         const nameSpan = document.createElement('span');
-        /* 視認性アップのため color:#ffffff を設定 */
         nameSpan.style.cssText = "font-size:14px; font-weight:bold; color:#ffffff;";
         nameSpan.textContent = s.name || "不明";
         
         const artistSmall = document.createElement('small');
-        /* 視認性アップのため少し明るめのグレーに変更 */
         artistSmall.style.cssText = "color:#cccccc;";
         artistSmall.textContent = s.artist || "不明";
         
