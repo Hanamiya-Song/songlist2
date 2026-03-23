@@ -61,15 +61,20 @@
   padding-top: 10px;
   padding-bottom: 20px;
 
-  /* --- ここが魔法の数字 --- */
-  padding-left: 10px;  /* 左側の余白は今のまま維持 */
-  padding-right: 0px;  /* 右側の内側余白を消して、バーを外へ */
+  /* --- ここが解決のセット --- */
+  /* 1. 右側にわざと 15px はみ出させる（バーを右に追い出す） */
+  margin-right: -15px; 
   
-  margin-right: -10px; /* 【重要】箱を右側に10pxはみ出させる */
-  /* ----------------------- */
+  /* 2. はみ出た分、内側の余白を 15px 作ってボタンを左に押し戻す */
+  /* これでボタンの「見た目の右端」は元の位置に戻ります */
+  padding-right: 15px; 
+  
+  /* 3. 左側は今の位置をキープ */
+  padding-left: 10px;
+  /* -------------------------- */
 
   overflow-y: auto;
-  overflow-x: hidden;  /* 横にはみ出さないようにガード */
+  overflow-x: hidden; /* 横揺れ防止 */
   -webkit-overflow-scrolling: touch;
 }
     #songList::-webkit-scrollbar {
