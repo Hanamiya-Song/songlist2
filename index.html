@@ -61,12 +61,6 @@
     #searchBox { flex: 1; height: 100%; padding: 0 12px; border-radius: 10px; font-size: 16px; box-sizing: border-box; margin: 0; }
     #sortSelect { width: 105px; height: 100%; border-radius: 10px; font-size: 11px; cursor: pointer; padding: 0 5px; box-sizing: border-box; text-align: center; }
 
-    .style-toggle { display: flex; background: var(--card); border-radius: 10px; overflow: hidden; border: 1px solid var(--border); height: 35px;}
-    .style-toggle label { flex: 1; text-align: center; color: #888; font-size: 13px; font-weight: bold; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center;}
-    .style-toggle input[type="radio"] { display: none; }
-    .style-toggle input[type="radio"]:checked + span { color: var(--accent); background: rgba(187, 134, 252, 0.15); }
-    .style-toggle span { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; }
-    
     #songList { flex-grow: 1; display: flex; flex-direction: column; gap: 8px; padding: 10px 0 20px 0; margin: 0; width: 100%; overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; }
     #songList::-webkit-scrollbar { width: 4px; }
     #songList::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
@@ -101,50 +95,52 @@
     .btn-random { background: #252525; color: #ddd; }
 
     #randomSelectionArea { background: var(--card); padding: 12px; border-radius: 10px; border: 1px dashed var(--accent); margin-bottom: 15px; }
-    /* 右下のメッセージボタン（フローティング） */
-#floatingMsgBtn {
-  position: fixed;
-  right: 20px;
-  bottom: 85px; /* トップへ戻るボタンの上くらい */
-  width: 56px;
-  height: 56px;
-  background: var(--accent);
-  color: #000;
-  border: none;
-  border-radius: 50%;
-  font-size: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.4);
-  z-index: 2500;
-  cursor: pointer;
-  transition: transform 0.2s;
-}
-#floatingMsgBtn:active { transform: scale(0.9); }
 
-/* ヘッダーに置くトグルのスタイル */
-.header-toggle {
-  display: flex;
-  background: #252525;
-  border-radius: 20px;
-  padding: 2px;
-  border: 1px solid var(--border);
-}
-.header-toggle-btn {
-  padding: 6px 12px;
-  font-size: 11px;
-  font-weight: bold;
-  border-radius: 18px;
-  color: #888;
-  cursor: pointer;
-}
-.header-toggle-btn.active {
-  background: var(--card);
-  color: var(--primary);
-}
-    .msg-btn { background: transparent; color: var(--accent); border: 1px solid var(--accent); padding: 8px 10px; border-radius: 8px; font-size: 11px; font-weight: bold; cursor: pointer; white-space: nowrap; transition: background 0.2s; }
-    .msg-btn:active { background: rgba(187, 134, 252, 0.2); }
+    /* 右下のメッセージボタン（吹き出し風） */
+    #floatingMsgBtn {
+      position: fixed;
+      right: 20px;
+      bottom: 85px; /* トップへ戻るボタンの上 */
+      width: 58px;
+      height: 58px;
+      background: var(--accent);
+      color: #000;
+      border: none;
+      /* 吹き出しの形：左上・右上・右下・左下 の丸み。右下を0にして尖らせる */
+      border-radius: 50% 50% 0 50%; 
+      font-size: 26px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+      z-index: 2500;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    #floatingMsgBtn:active { transform: scale(0.9); }
+
+    /* ヘッダーに置くトグルのスタイル */
+    .header-toggle {
+      display: flex;
+      background: #252525;
+      border-radius: 20px;
+      padding: 2px;
+      border: 1px solid var(--border);
+    }
+    .header-toggle-btn {
+      padding: 6px 12px;
+      font-size: 11px;
+      font-weight: bold;
+      border-radius: 18px;
+      color: #888;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .header-toggle-btn.active {
+      background: var(--card);
+      color: var(--primary);
+    }
+    
     #msgModal textarea { width: 100%; height: 150px; padding: 15px; font-size: 16px; outline: none; box-sizing: border-box; resize: none; border-radius: 10px;}
     .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 3000; display: none; flex-direction: column; padding: 20px; box-sizing: border-box; }
     .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; color: var(--accent); }
@@ -183,11 +179,12 @@
           <button id="requestBtn" onclick="openRequestModal()" style="background:#333; border:none; border-radius:50%; width:40px; height:40px; position:relative; display:flex; align-items:center; justify-content:center; cursor:pointer;">📩<span id="requestBadge" style="position:absolute; top:-5px; right:-5px; background:var(--error); color:white; border-radius:50%; padding:2px 6px; font-size:10px; display:none;">0</span></button>
           <button id="actionBtn" onclick="handleAction()"> START</button>
         </div>
+        
         <div class="header-toggle" id="guestToggleArea">
-    <div class="header-toggle-btn active" id="tgl-all" onclick="filterByType('all')">すべて</div>
-    <div class="header-toggle-btn" id="tgl-acoustic" onclick="filterByType('弾き語り')">弾語</div>
-    <div class="header-toggle-btn" id="tgl-karaoke" onclick="filterByType('カラオケ')">カラ</div>
-  </div>
+          <div class="header-toggle-btn" id="tgl-acoustic" onclick="filterByType('弾き語り')">弾き語り</div>
+          <div class="header-toggle-btn" id="tgl-karaoke" onclick="filterByType('カラオケ')">カラオケ</div>
+        </div>
+        
         <button id="loginBtn" onclick="tryLogin()">LogIn</button>
       </div>
     </div>
@@ -210,17 +207,11 @@
             <option value="date">直近歌った順</option>
           </select>
         </div>
-        <div class="style-toggle">
-          <label><input type="radio" name="playStyle" value="all" checked onchange="filterSongs()"><span>すべて</span></label>
-          <label><input type="radio" name="playStyle" value="弾き語り" onchange="filterSongs()"><span> 弾き語り</span></label>
-          <label><input type="radio" name="playStyle" value="カラオケ" onchange="filterSongs()"><span> カラオケ</span></label>
         </div>
-      </div>
       <div id="songList"></div>
     </div>
 
     <div id="page-log" class="page">
-      
       <div id="randomSelectionArea" style="display:none;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
           <strong style="color:var(--accent); font-size:12px;">🎲 本日の20選</strong>
@@ -317,6 +308,8 @@
 
   <button id="pageTopBtn" onclick="scrollToTop()">↑</button>
 
+  <button id="floatingMsgBtn" onclick="openMsgModal()">✉️</button>
+
   <script>
     const GAS_URL = "https://script.google.com/macros/s/AKfycbwiFEMX9Wj6aBubEpqx695kuTCTDzEvBnWMny1QzMGLej1lVINNkC5Dc2Fg4MwkRleoDA/exec";
     let IS_ADMIN = false;
@@ -326,17 +319,10 @@
     let searchTimeout;
     let toastTimeout;
 
-    // --- 【修正】完全版のターゲット判定処理 ---
-    // --- 【確定版】GASから届く文字列データに対応 ---
     const isTargetType = (song, target) => {
-      // GASで type という項目名にして送っているので song.type を見る
       if (!song.type) return false;
-      
-      // song.type は "弾き語り" や "弾き語り,J-POP" という文字列なので、
-      // includes で「弾き語り」などの文字が含まれているかチェックする
       return String(song.type).includes(target);
     };
-    // --------------------------------------------
 
     function showToast(msg, isError = false) {
       const toast = document.getElementById('toast');
@@ -417,8 +403,6 @@
       }
 
       const songs = await callGAS({ action: "getSongs" }, false); 
-
-      console.log(songs); 
       
       if (songs) { 
         allSongs = songs; 
@@ -443,10 +427,7 @@
 
       allSongs.forEach(s => {
         const artist = s.artist || "不明";
-        
         if (OHMORI_GROUP.includes(artist)) ohmoriTotal++;
-        
-        // アーティスト別の曲数をカウント（大森元貴以外）
         if (!OHMORI_GROUP.includes(artist)) {
           counts[artist] = (counts[artist] || 0) + 1;
         }
@@ -471,29 +452,22 @@
       filterSongs();
     }
 
+    // --- 【修正】「すべて」がないトグルのON/OFF切り替えロジック ---
     let selectedType = 'all';
 
-
-
-function filterByType(type) {
-
-  selectedType = type;
-
-  document.querySelectorAll('.header-toggle-btn').forEach(btn => btn.classList.remove('active'));
-
-  
-
-  if(type === 'all') document.getElementById('tgl-all').classList.add('active');
-
-  else if(type === '弾き語り') document.getElementById('tgl-acoustic').classList.add('active');
-
-  else if(type === 'カラオケ') document.getElementById('tgl-karaoke').classList.add('active');
-
-  
-
-  filterSongs(); // これでリストが更新されます
-
-}
+    function filterByType(type) {
+      // 既にアクティブなボタンを押した場合は「すべて（全曲表示）」に戻す
+      if (selectedType === type) {
+        selectedType = 'all';
+        document.querySelectorAll('.header-toggle-btn').forEach(btn => btn.classList.remove('active'));
+      } else {
+        selectedType = type;
+        document.querySelectorAll('.header-toggle-btn').forEach(btn => btn.classList.remove('active'));
+        if (type === '弾き語り') document.getElementById('tgl-acoustic').classList.add('active');
+        else if (type === 'カラオケ') document.getElementById('tgl-karaoke').classList.add('active');
+      }
+      filterSongs(); 
+    }
     
     function filterSongs() {
       const query = document.getElementById('searchBox')?.value.toLowerCase() || "";
@@ -503,28 +477,19 @@ function filterByType(type) {
       
       let f = [...allSongs];
 
-      // --- 1. タブによる絞り込み ---
-      if (currentTab === "すべて") {
-        // 絞り込みなし
-      } else if (currentTab === "大森元貴曲") {
+      // --- 1. ヘッダートグル（弾き語り/カラオケ）による絞り込み ---
+      if (selectedType !== 'all') {
+        f = f.filter(s => isTargetType(s, selectedType));
+      }
+
+      // --- 2. アーティストタブによる絞り込み ---
+      if (currentTab === "大森元貴曲") {
         f = f.filter(s => OHMORI_GROUP.includes(s.artist || ""));
-      } else if (currentTab === "弾き語り") {
-        f = f.filter(s => isTargetType(s, "弾き語り"));
-      } else if (currentTab === "カラオケ") {
-        f = f.filter(s => isTargetType(s, "カラオケ"));
-      } else {
+      } else if (currentTab !== "すべて") {
         f = f.filter(s => (s.artist || "") === currentTab);
       }
 
-      // --- 1.5 ラジオボタン(弾き語り/カラオケ トグル)による絞り込み ---
-      const playStyle = document.querySelector('input[name="playStyle"]:checked')?.value || "all";
-      if (playStyle === "弾き語り") {
-        f = f.filter(s => isTargetType(s, "弾き語り"));
-      } else if (playStyle === "カラオケ") {
-        f = f.filter(s => isTargetType(s, "カラオケ"));
-      }
-
-      // --- 2. 検索キーワードによる絞り込み ---
+      // --- 3. 検索キーワードによる絞り込み ---
       if (query) {
         f = f.filter(s => 
           (s.name || "").toLowerCase().includes(query) || 
@@ -532,7 +497,7 @@ function filterByType(type) {
         );
       }
 
-      // --- 3. ソート処理 ---
+      // --- 4. ソート処理 ---
       f.sort((a, b) => {
         if (sortType === "name") return (a.name || "").localeCompare((b.name || ""), 'ja');
         if (sortType === "date") {
@@ -543,7 +508,7 @@ function filterByType(type) {
         return (a.artist || "").localeCompare((b.artist || ""), 'ja');
       });
 
-      // --- 4. 描画処理 ---
+      // --- 5. 描画処理 ---
       if (f.length === 0) {
         container.innerHTML = `<div class="empty-state"><div class="empty-icon">😢</div><div>見つかりませんでした</div></div>`;
         return;
@@ -661,44 +626,28 @@ function filterByType(type) {
     }
 
     function applyAdminMode(isAdmin) {
-  IS_ADMIN = isAdmin;
-  localStorage.setItem('isAdminLoggedIn', isAdmin);
+      IS_ADMIN = isAdmin;
+      localStorage.setItem('isAdminLoggedIn', isAdmin);
 
-  // 1. 管理者専用要素（通知ボタンやSTARTボタン）の表示切り替え
-  document.querySelectorAll('.admin-only').forEach(el => {
-    el.style.display = isAdmin ? 'flex' : 'none';
-  });
+      document.querySelectorAll('.admin-only').forEach(el => {
+        el.style.display = isAdmin ? 'flex' : 'none';
+      });
 
-  // 2. ログインボタン：管理者の時は「ログアウト」的な役割にするため、
-  // もしログアウトボタンを別に用意していないなら、ここでは一旦「非表示」にするのが一般的です。
-  // （ログインしたままログインボタンがあるとおかしいため）
-  document.getElementById('loginBtn').style.display = isAdmin ? 'none' : 'block';
+      document.getElementById('loginBtn').style.display = isAdmin ? 'none' : 'block';
+      document.getElementById('titleContainer').style.display = isAdmin ? 'none' : 'flex';
+      document.getElementById('timerDisplay').style.display = isAdmin ? 'block' : 'none';
 
-  // 3. タイトルとタイマーの切り替え
-  document.getElementById('titleContainer').style.display = isAdmin ? 'none' : 'flex';
-  document.getElementById('timerDisplay').style.display = isAdmin ? 'block' : 'none';
+      // ゲスト用トグルとメッセージボタンを管理者の時は隠す
+      const toggleArea = document.getElementById('guestToggleArea');
+      if (toggleArea) toggleArea.style.display = isAdmin ? 'none' : 'flex';
 
-  // 4. 【重要】ゲスト用トグルエリア（弾語/カラ）の制御
-  // 管理者画面では不要なので、ログイン時は隠します
-  const toggleArea = document.getElementById('guestToggleArea');
-  if (toggleArea) {
-    toggleArea.style.display = isAdmin ? 'none' : 'flex';
-  }
+      const floatBtn = document.getElementById('floatingMsgBtn');
+      if (floatBtn) floatBtn.style.display = isAdmin ? 'none' : 'flex';
 
-  // 5. 【重要】右下のフローティングメッセージボタンの制御
-  // 管理者操作の邪魔にならないよう、ログイン時は隠します
-  const floatBtn = document.getElementById('floatingMsgBtn');
-  if (floatBtn) {
-    floatBtn.style.display = isAdmin ? 'none' : 'flex';
-  }
-
-  // 6. 管理者モードならリクエストの定期チェックを開始
-  if (isAdmin) {
-    // すでに動いている可能性を考慮し、一度クリアしてからセットするのが安全ですが
-    // 簡易的にはこのまま追加します
-    setInterval(checkRequests, 3000);
-  }
-}
+      if (isAdmin) {
+        setInterval(checkRequests, 3000);
+      }
+    }
 
     async function sendChatMessage() {
       const inputEl = document.getElementById('chatInput');
